@@ -13,7 +13,7 @@ const TEMPER_CONFIG = {
   0: {
     level: 0,
     label: "Shaaji at 6 AM",
-    img: "mascot-head-happy.jpg",
+    img: "mascot-head-happy.png",
     time: "6 AM",
     bgColor: "bg-blue-100",
     textColor: "text-blue-900",
@@ -24,7 +24,7 @@ const TEMPER_CONFIG = {
   1: {
     level: 1,
     label: "Neutral Shaaji",
-    img: "mascot-head.jpg",
+    img: "mascot-head.png",
     time: "12 PM",
     bgColor: "bg-orange-100",
     textColor: "text-orange-900",
@@ -35,7 +35,7 @@ const TEMPER_CONFIG = {
   2: {
     level: 2,
     label: "Shaaji at 6 PM",
-    img: "mascot-head-angry.jpg", // You might need to create this image
+    img: "mascot-head-angry.png", // You might need to create this image
     time: "6 PM",
     bgColor: "bg-red-100",
     textColor: "text-red-900",
