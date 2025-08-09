@@ -54,8 +54,9 @@ const ThinkingAnimation = () => {
   }, []);
 
   return (
-    <span className="text-blue-900 font-semibold">
-      Shaaji is thinking{dots}
+    <span className="text-blue-900 font-semibold flex items-center gap-x-3">
+      <img className="w-8 animate-spin" src="mascot-head.png" /> Shaaji is
+      thinking{dots}
     </span>
   );
 };
@@ -266,7 +267,8 @@ Now process this query: ${query}`,
                     <b>{query}</b>
                   </h1>
                   <div className="p-4 rounded-md bg-blue-100 flex flex-col gap-y-2 fade-in-up">
-                    <span className="font-semibold text-blue-900">
+                    <span className="font-semibold text-blue-900 flex gap-x-3 items-center">
+                      <img className="w-8" src="mascot-head.png" />
                       Shaaji's opinion
                     </span>
                     <p className="leading-relaxed text-blue-900">

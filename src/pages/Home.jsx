@@ -5,6 +5,33 @@ import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 
 export default function Home() {
+  const queries = [
+    "How to convince parents to let me go on a trip with friends?",
+    "Malayalam love quotes for Instagram bio",
+    "Tomorrow collector declare holiday for rain?",
+    "How to talk to a girl in Kerala without being creepy?",
+    "Is it illegal to have a part-time job in Kerala as a student?",
+    "Easy ways to sneak out of the house",
+    "how to hide phone from parents while studying",
+    "How to make money without working?",
+    "How to make tea?",
+    "How to pass exams without studying",
+    "How to cover whole syllabus within 1 day?",
+    "how to convince parents to buy a gaming laptop for 'online classes' ",
+    "what to say when you get a low grade in exams",
+    "best ways to copy in exam without getting caught",
+    "how to pass a test you didn't study for",
+    "how to hide phone from parents while studying",
+    "ways to talk on the phone after 10 pm without getting caught",
+    "best excuses for being late to school in Malayalam",
+    "how to get out of a family function",
+    "how to block my dad on Facebook without him knowing",
+    "best VPN for phone in Kerala",
+    "best mandi spot near me",
+    "How to get a girlfriend?",
+    "How much would an iphone cost on emi?",
+  ];
+
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -57,7 +84,9 @@ export default function Home() {
           />
           <Button
             text="I'm feeling lucky"
-            onClick={() => handleSearch("random topic")}
+            onClick={() =>
+              handleSearch(queries[Math.floor(Math.random() * queries.length)])
+            }
           />
         </div>
       </div>
