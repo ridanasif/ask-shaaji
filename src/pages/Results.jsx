@@ -39,17 +39,36 @@ const useTypingEffect = (text, speed = 50) => {
   return { displayedText, isTyping };
 };
 
+const ThinkingAnimation = () => {
+  const [dots, setDots] = useState("");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots((prev) => {
+        if (prev === "...") return "";
+        return prev + ".";
+      });
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span className="text-blue-900 font-semibold">
+      Shaaji is thinking{dots}
+    </span>
+  );
+};
+
 const SkeletonLoader = () => (
   <div className="space-y-5 grow animate-pulse">
     <div className="h-6 bg-gray-200 rounded w-64"></div>
 
     {/* Uncle's opinion skeleton */}
-    <div className="p-4 rounded-md bg-blue-50 border border-blue-100">
-      <div className="h-5 bg-blue-200 rounded w-32 mb-2"></div>
-      <div className="space-y-2">
-        <div className="h-4 bg-blue-150 rounded w-full"></div>
-        <div className="h-4 bg-blue-150 rounded w-3/4"></div>
-      </div>
+    <div className="p-4 rounded-md bg-blue-100 flex flex-col gap-y-2">
+      <p className="leading-relaxed">
+        <ThinkingAnimation />
+      </p>
     </div>
 
     {/* Results skeleton */}
