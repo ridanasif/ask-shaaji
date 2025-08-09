@@ -52,7 +52,7 @@ export default function Home() {
       <div className="flex flex-col justify-center items-center grow gap-y-5">
         <div className="flex items-center gap-x-4">
           <Logo className="text-8xl" />
-          <img src="mascot.png" className="w-17" alt="Shaaji mascot" />
+          <img src="mascot.jpg" className="w-17" alt="Shaaji mascot" />
         </div>
         <div className="ring-1 w-2xl py-3 px-6 rounded-full shadow-md ring-gray-300 flex items-center gap-x-3">
           <svg
