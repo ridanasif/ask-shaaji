@@ -58,16 +58,16 @@ THE WELCOME PAGE.
   > Here the front page of the search engine is displayed , along with the search tab to search queries. The featuer "I'm feeling lucky" is provided here, that gives a random query.  
 
 
-<img wdth="2880" height="1800" alt="frame (3)" src="https://ibb.co/sXtWxbp" />
+<img wdth="2880" height="1800" alt="frame (3)" src="https://i.ibb.co/dH7mCjs/Screenshot-2025-08-09-at-3-15-27-PM.png" />
 RESULTS IN SHAAJI's 6AM MOOD
 >At 6 am Shaaji is the most calm and happy. He gives thoughtful advice with patience, 
 
-<img wdth="2880" height="1800" alt="frame (3)" src="https://ibb.co/4wmcm2VP" />
+<img wdth="2880" height="1800" alt="frame (3)" src="https://i.ibb.co/gbjGjdRz/Screenshot-2025-08-09-at-3-15-46-PM.png" />
 RESULTS IN SHAAJI's 6AM MOOD
 >At 6 pm, Shaaji is completely drained after a long day. He is irritated and blunt, showing his true Malayalam uncle frustration.
 
 # Diagrams
-<img width="1522" height="659" alt="frame (3)" src="https://ibb.co/3LfhbZq" />
+<img width="1522" height="659" alt="frame (3)" src="https://i.ibb.co/p9WXTF8/wireframe.png" />
 THE WIREFRAME OF THE SEARCH EMGINE:
   >Describes the workflow starting from  the main page and then to the page where the results are shown. Also breifs about the features.
 
