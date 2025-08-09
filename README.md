@@ -33,10 +33,16 @@ For Software:
 - Tools used: Gemini
 
 ### Implementation
-For Software:
 # Installation
+
 cd ask-shaaji
+
 npm install
+
+Please follow the provided steps:
+1) Visit https://aistudio.google.com/
+2) Create a new api key
+3) Create a .env file in the root directory and paste the code: `VITE_GEMINI_API_KEY={YOUR_API_KEY}`
 
 # Run
 npm run dev
@@ -56,7 +62,7 @@ For Software:
   
   Simple & Accessible UI – Familiar search interface with themed visuals.
 
-# Screenshots (Add at least 3)
+# Screenshots
 <img wdth="2880" height="1800" alt="frame (3)" src="https://i.ibb.co/bTdB4sH/Screenshot-2025-08-09-at-3-15-02-PM.png" />
 THE WELCOME PAGE.
   > Here the front page of the search engine is displayed , along with the search tab to search queries. The featuer "I'm feeling lucky" is provided here, that gives a random query.  
