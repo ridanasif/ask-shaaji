@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
+import { generateAndPlayVoice } from "../utils/voiceUtils"; // Import the voice utility
 
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
@@ -35,7 +36,7 @@ const TEMPER_CONFIG = {
   2: {
     level: 2,
     label: "Shaaji at 6 PM",
-    img: "mascot-head-angry.png", // You might need to create this image
+    img: "mascot-head-angry.png",
     time: "6 PM",
     bgColor: "bg-red-100",
     textColor: "text-red-900",
@@ -134,6 +135,81 @@ const SkeletonLoader = ({ temperLevel }) => {
   );
 };
 
+// Enhanced Voice Button Component with proper SVG icons
+const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
+  const currentTemper = TEMPER_CONFIG[temperLevel];
+
+  const handleClick = () => {
+    if (isPlaying) {
+      onStop();
+    } else {
+      onPlay();
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={isLoading}
+      className={`p-2 rounded-full transition-all duration-300 hover:scale-110 ${
+        isLoading
+          ? "cursor-not-allowed opacity-50"
+          : "cursor-pointer hover:shadow-md"
+      } hover:bg-white hover:bg-opacity-30`}
+      title={
+        isLoading
+          ? "Loading..."
+          : isPlaying
+          ? "Stop audio"
+          : "Play Shaaji's opinion"
+      }
+    >
+      {isLoading ? (
+        // Loading spinner
+        <svg
+          className={`w-6 h-6 ${currentTemper.textColor} animate-spin`}
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
+        </svg>
+      ) : isPlaying ? (
+        // Stop/Pause icon with pulsing effect
+        <svg
+          className={`w-6 h-6 ${currentTemper.textColor} animate-pulse`}
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+        </svg>
+      ) : (
+        // Volume/Speaker icon with sound waves
+        <svg
+          className={`w-6 h-6 ${currentTemper.textColor} hover:animate-pulse`}
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M3 9v6h4l5 5V4L7 9H3z" />
+          <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+          <path d="M19 12c0 2.53-.77 4.87-2.09 6.81l1.09 1.09C19.41 17.99 20 15.14 20 12s-.59-5.99-1.91-7.9L17 5.19C18.23 7.13 19 9.53 19 12z" />
+        </svg>
+      )}
+    </button>
+  );
+};
+
 const TemperControl = ({ temperLevel, setTemperLevel }) => {
   const getSliderBackground = () => {
     const percentage = (temperLevel / 2) * 100;
@@ -228,6 +304,9 @@ export default function Results() {
     results: [],
   });
   const [loading, setLoading] = useState(false);
+  const [isPlayingVoice, setIsPlayingVoice] = useState(false);
+  const [isVoiceLoading, setIsVoiceLoading] = useState(false);
+  const [currentAudio, setCurrentAudio] = useState(null);
 
   // Get current temper configuration
   const currentTemper = TEMPER_CONFIG[temperLevel];
@@ -237,6 +316,78 @@ export default function Results() {
     searchData.uncle_opinion,
     20 // Speed in milliseconds (lower = faster)
   );
+
+  // Voice play handler
+  const handlePlayVoice = async () => {
+    if (!searchData.uncle_opinion || isVoiceLoading) return;
+
+    setIsVoiceLoading(true);
+    try {
+      const audioInstance = await generateAndPlayVoice(
+        searchData.uncle_opinion,
+        temperLevel
+      );
+
+      // Check if audioInstance is valid
+      if (
+        !audioInstance ||
+        typeof audioInstance.addEventListener !== "function"
+      ) {
+        throw new Error("Invalid audio instance returned");
+      }
+
+      setCurrentAudio(audioInstance);
+      setIsPlayingVoice(true);
+
+      // Listen for when audio ends naturally
+      const handleAudioEnd = () => {
+        console.log("Audio ended naturally");
+        setIsPlayingVoice(false);
+        setCurrentAudio(null);
+      };
+
+      const handleAudioError = (error) => {
+        console.error("Audio playback error:", error);
+        setIsPlayingVoice(false);
+        setCurrentAudio(null);
+        // Only show alert for actual playback errors
+        // alert("There was an error playing the audio. Please try again.");
+      };
+
+      audioInstance.addEventListener("ended", handleAudioEnd, { once: true });
+      audioInstance.addEventListener("error", handleAudioError, { once: true });
+    } catch (error) {
+      console.error("Error in handlePlayVoice:", error);
+      setIsPlayingVoice(false);
+      setCurrentAudio(null);
+      // alert(
+      //   "Sorry, there was an error generating the voice. Please check your internet connection and try again."
+      // );
+    } finally {
+      setIsVoiceLoading(false);
+    }
+  };
+
+  // Voice stop handler
+  const handleStopVoice = () => {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      setIsPlayingVoice(false);
+      setCurrentAudio(null);
+    }
+  };
+
+  // Cleanup audio on component unmount or when query changes
+  useEffect(() => {
+    return () => {
+      if (currentAudio) {
+        currentAudio.pause();
+        setCurrentAudio(null);
+        setIsPlayingVoice(false);
+      }
+    };
+  }, [query]);
 
   useEffect(() => {
     if (query) {
@@ -261,6 +412,13 @@ export default function Results() {
 
     async function fetchSearchData() {
       setLoading(true);
+      // Stop any playing audio when new search starts
+      if (currentAudio) {
+        currentAudio.pause();
+        setCurrentAudio(null);
+        setIsPlayingVoice(false);
+      }
+
       try {
         // Replace this with your actual API URL
         const res = await ai.models.generateContent({
@@ -407,12 +565,25 @@ Now process this query: "${query}" with temper level: ${temperLevel}`,
                   <div
                     className={`p-4 rounded-md ${currentTemper.bgColor} flex flex-col gap-y-2 fade-in-up`}
                   >
-                    <span
-                      className={`font-semibold ${currentTemper.textColor} flex gap-x-3 items-center`}
-                    >
-                      <img className="w-8" src={currentTemper.img} />
-                      Shaaji's opinion
-                    </span>
+                    {/* Updated header with voice button */}
+                    <div className="flex justify-between items-center">
+                      <span
+                        className={`font-semibold ${currentTemper.textColor} flex gap-x-3 items-center`}
+                      >
+                        <img className="w-8" src={currentTemper.img} />
+                        Shaaji's opinion
+                      </span>
+                      {/* Voice button - only show when opinion is loaded */}
+                      {searchData.uncle_opinion && !isTyping && (
+                        <VoiceButton
+                          onPlay={handlePlayVoice}
+                          onStop={handleStopVoice}
+                          isPlaying={isPlayingVoice}
+                          isLoading={isVoiceLoading}
+                          temperLevel={temperLevel}
+                        />
+                      )}
+                    </div>
                     <p className={`leading-relaxed ${currentTemper.textColor}`}>
                       {typedOpinion}
                       {isTyping && (
