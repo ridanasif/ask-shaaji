@@ -47,13 +47,17 @@ For Software:
    https://ask-shaaji.vercel.app/
    
 -Features:
-  >Conversational Tone – Responses written in a an ammavan style malayalam text.
-  >Cultural Context – Incorporates local references, expressions, and scenarios.
-  >Dynamic Response Variation – Same question can have multiple unique replies.
-  >Simple & Accessible UI – Familiar search interface with themed visuals.
+
+  Conversational Tone – Responses written in a an ammavan style malayalam text.
+  
+  Cultural Context – Incorporates local references, expressions, and scenarios.
+  
+  Dynamic Response Variation – Same question can have multiple unique replies.
+  
+  Simple & Accessible UI – Familiar search interface with themed visuals.
 
 # Screenshots (Add at least 3)
-<img wdth="2880" height="1800" alt="frame (3)" src="https://ibb.co/Ymjk5cD" />
+<img wdth="2880" height="1800" alt="frame (3)" src="https://i.ibb.co/bTdB4sH/Screenshot-2025-08-09-at-3-15-02-PM.png" />
 THE WELCOME PAGE.
   > Here the front page of the search engine is displayed , along with the search tab to search queries. The featuer "I'm feeling lucky" is provided here, that gives a random query.  
 
