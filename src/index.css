@@ -1,0 +1,14 @@
+@import "tailwindcss";
+h1,
+p,
+span,
+button,
+input,
+a {
+  @apply tracking-tight;
+  font-family: "Poppins", sans-serif;
+  font-weight: medium;
+}
+.logo span {
+  font-family: "Cal Sans", sans-serif !important;
+}
