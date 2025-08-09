@@ -8,6 +8,37 @@ const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
 });
 
+// Custom hook for typing animation
+const useTypingEffect = (text, speed = 50) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (!text) {
+      setDisplayedText("");
+      return;
+    }
+
+    setIsTyping(true);
+    setDisplayedText("");
+
+    let index = 0;
+    const timer = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedText(text.slice(0, index + 1));
+        index++;
+      } else {
+        setIsTyping(false);
+        clearInterval(timer);
+      }
+    }, speed);
+
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return { displayedText, isTyping };
+};
+
 const SkeletonLoader = () => (
   <div className="space-y-5 grow animate-pulse">
     <div className="h-6 bg-gray-200 rounded w-64"></div>
@@ -50,6 +81,12 @@ export default function Results() {
     results: [],
   });
   const [loading, setLoading] = useState(false);
+
+  // Typing animation for uncle's opinion
+  const { displayedText: typedOpinion, isTyping } = useTypingEffect(
+    searchData.uncle_opinion,
+    20 // Speed in milliseconds (lower = faster)
+  );
 
   useEffect(() => {
     if (query) {
@@ -214,7 +251,8 @@ Now process this query: ${query}`,
                       Shaaji's opinion
                     </span>
                     <p className="leading-relaxed text-blue-900">
-                      {searchData.uncle_opinion}
+                      {typedOpinion}
+                      {isTyping && <span className="text-blue-900">|</span>}
                     </p>
                   </div>
 
