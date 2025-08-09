@@ -167,7 +167,7 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
       {isLoading ? (
         // Loading spinner
         <svg
-          className={`w-6 h-6 ${currentTemper.textColor} animate-spin`}
+          className="w-5 h-5 animate-spin text-blue-900"
           fill="none"
           viewBox="0 0 24 24"
         >
@@ -178,17 +178,17 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
             r="10"
             stroke="currentColor"
             strokeWidth="4"
-          />
+          ></circle>
           <path
             className="opacity-75"
             fill="currentColor"
             d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
+          ></path>
         </svg>
       ) : isPlaying ? (
         // Stop/Pause icon with pulsing effect
         <svg
-          className={`w-6 h-6 ${currentTemper.textColor} animate-pulse`}
+          className="w-5 h-5 text-blue-900"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -197,13 +197,11 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
       ) : (
         // Volume/Speaker icon with sound waves
         <svg
-          className={`w-6 h-6 ${currentTemper.textColor} hover:animate-pulse`}
+          className="w-5 h-5 text-blue-900"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
-          <path d="M3 9v6h4l5 5V4L7 9H3z" />
-          <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
-          <path d="M19 12c0 2.53-.77 4.87-2.09 6.81l1.09 1.09C19.41 17.99 20 15.14 20 12s-.59-5.99-1.91-7.9L17 5.19C18.23 7.13 19 9.53 19 12z" />
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
         </svg>
       )}
     </button>
