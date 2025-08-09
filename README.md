@@ -31,9 +31,10 @@ For Software:
 - Languages used: JavaScript
 - Frameworks Used: React
 - Tools used: Gemini
-
-### Implementation
+- 
 # Installation
+
+Prerequisites: node, npm
 
 cd ask-shaaji
 
