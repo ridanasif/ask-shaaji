@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
-import { generateAndPlayVoice } from "../utils/voiceUtils"; // Import the voice utility
+import { generateAndPlayVoice } from "../utils/voiceUtils";
 
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
@@ -12,8 +12,6 @@ const ai = new GoogleGenAI({
 // Global temper configuration
 const TEMPER_CONFIG = {
   0: {
-    level: 0,
-    label: "Shaaji at 6 AM",
     img: "mascot-head-happy.png",
     time: "6 AM",
     bgColor: "bg-blue-100",
@@ -23,8 +21,6 @@ const TEMPER_CONFIG = {
       "Morning Shaaji is calm and gentle, giving thoughtful advice with patience.",
   },
   1: {
-    level: 1,
-    label: "Neutral Shaaji",
     img: "mascot-head.png",
     time: "12 PM",
     bgColor: "bg-orange-100",
@@ -34,8 +30,6 @@ const TEMPER_CONFIG = {
       "Neutral Shaaji is balanced, mixing wisdom with mild skepticism.",
   },
   2: {
-    level: 2,
-    label: "Shaaji at 6 PM",
     img: "mascot-head-angry.png",
     time: "6 PM",
     bgColor: "bg-red-100",
@@ -83,10 +77,7 @@ const ThinkingAnimation = ({ temperLevel }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDots((prev) => {
-        if (prev === "...") return "";
-        return prev + ".";
-      });
+      setDots((prev) => (prev === "..." ? "" : prev + "."));
     }, 500);
 
     return () => clearInterval(interval);
@@ -96,7 +87,11 @@ const ThinkingAnimation = ({ temperLevel }) => {
     <span
       className={`${currentTemper.textColor} font-semibold flex items-center gap-x-3`}
     >
-      <img className="w-8 animate-spin" src={currentTemper.img} />
+      <img
+        className="w-8 animate-spin"
+        src={currentTemper.img}
+        alt="thinking"
+      />
       Shaaji is thinking{dots}
     </span>
   );
@@ -106,27 +101,23 @@ const SkeletonLoader = ({ temperLevel }) => {
   const currentTemper = TEMPER_CONFIG[temperLevel];
 
   return (
-    <div className="space-y-5 grow animate-pulse">
-      <div className="h-6 bg-gray-200 rounded w-64"></div>
-
-      {/* Uncle's opinion skeleton */}
+    <div className="space-y-4 sm:space-y-5 grow animate-pulse">
+      <div className="h-4 sm:h-6 bg-gray-200 rounded w-48 sm:w-64"></div>
       <div
-        className={`p-4 rounded-md ${currentTemper.bgColor} flex flex-col gap-y-2`}
+        className={`p-3 sm:p-4 rounded-md ${currentTemper.bgColor} flex flex-col gap-y-2`}
       >
         <p className="leading-relaxed">
           <ThinkingAnimation temperLevel={temperLevel} />
         </p>
       </div>
-
-      {/* Results skeleton */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {[...Array(5)].map((_, index) => (
           <div key={index} className="group">
-            <div className="h-4 bg-gray-200 rounded w-48 mb-1"></div>
-            <div className="h-6 bg-gray-200 rounded w-96 mb-2"></div>
+            <div className="h-3 sm:h-4 bg-green-100 rounded w-32 sm:w-48 mb-1"></div>
+            <div className="h-5 sm:h-6 bg-blue-100 rounded w-64 sm:w-96 mb-2"></div>
             <div className="space-y-1">
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              <div className="h-3 sm:h-4 bg-gray-100 rounded w-full"></div>
+              <div className="h-3 sm:h-4 bg-gray-100 rounded w-4/5 sm:w-5/6"></div>
             </div>
           </div>
         ))}
@@ -135,10 +126,8 @@ const SkeletonLoader = ({ temperLevel }) => {
   );
 };
 
-// Enhanced Voice Button Component with proper SVG icons
-const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
-  const currentTemper = TEMPER_CONFIG[temperLevel];
-
+// Optimized Voice Button Component
+const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading }) => {
   const handleClick = () => {
     if (isPlaying) {
       onStop();
@@ -165,7 +154,6 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
       }
     >
       {isLoading ? (
-        // Loading spinner
         <svg
           className="w-5 h-5 animate-spin text-blue-900"
           fill="none"
@@ -186,7 +174,6 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
           ></path>
         </svg>
       ) : isPlaying ? (
-        // Stop/Pause icon with pulsing effect
         <svg
           className="w-5 h-5 text-blue-900"
           fill="currentColor"
@@ -195,7 +182,6 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
           <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
         </svg>
       ) : (
-        // Volume/Speaker icon with sound waves
         <svg
           className="w-5 h-5 text-blue-900"
           fill="currentColor"
@@ -210,8 +196,6 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
 
 const TemperControl = ({ temperLevel, setTemperLevel }) => {
   const getSliderBackground = () => {
-    const percentage = (temperLevel / 2) * 100;
-    // Blue to Orange to Red gradient
     return `linear-gradient(to right, #3b82f6 0%, #f97316 50%, #ef4444 100%)`;
   };
 
@@ -220,56 +204,57 @@ const TemperControl = ({ temperLevel, setTemperLevel }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 sticky top-24">
-      <div className="text-center mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+    <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 lg:sticky lg:top-24">
+      <div className="text-center mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">
           Shaaji's Temper
         </h3>
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <span className="text-2xl">
-            <img src={TEMPER_CONFIG[temperLevel].img} className="w-10" />
+        <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+          <span className="text-xl sm:text-2xl">
+            <img
+              src={TEMPER_CONFIG[temperLevel].img}
+              className="w-8 sm:w-10"
+              alt="temper"
+            />
           </span>
           <div className="text-center">
-            <div className="font-medium text-gray-700">
+            <div className="font-medium text-gray-700 text-sm sm:text-base">
               {TEMPER_CONFIG[temperLevel].time}
-            </div>
-            <div className="text-sm text-gray-500">
-              {TEMPER_CONFIG[temperLevel].label}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Custom Slider */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <div className="relative">
-          {/* Slider Track */}
           <div
-            className="h-3 rounded-full mb-4"
+            className="h-2 sm:h-3 rounded-full mb-3 sm:mb-4"
             style={{ background: getSliderBackground() }}
           >
-            {/* Slider Thumb */}
             <div
-              className="absolute top-0 w-6 h-6 bg-white border-2 rounded-full shadow-md cursor-pointer transform -translate-y-1.5 transition-all duration-200 hover:border-gray-600"
+              className="absolute top-0 w-5 h-5 sm:w-6 sm:h-6 bg-white border-2 rounded-full shadow-md cursor-pointer transform -translate-y-1 sm:-translate-y-1.5 transition-all duration-200 hover:border-gray-600"
               style={{
-                left: `calc(${(temperLevel / 2) * 100}% - 12px)`,
+                left: `calc(${(temperLevel / 2) * 100}% - 10px)`,
                 borderColor: getCurrentThumbColor(),
               }}
             />
           </div>
 
-          {/* Clickable areas for levels */}
           <div className="flex justify-between">
             {Object.values(TEMPER_CONFIG).map((item, index) => (
               <button
                 key={index}
                 onClick={() => setTemperLevel(index)}
-                className={`flex flex-col items-center p-2 rounded-lg transition-all duration-200 cursor-pointer hover:bg-gray-50 ${
+                className={`flex flex-col items-center p-1 sm:p-2 rounded-lg transition-all duration-200 cursor-pointer hover:bg-gray-50 ${
                   temperLevel === index ? "bg-gray-100 shadow-sm" : ""
                 }`}
               >
-                <div className="text-xl mb-1">
-                  <img src={item.img} className="w-8" />
+                <div className="text-base sm:text-xl mb-1">
+                  <img
+                    src={item.img}
+                    className="w-6 sm:w-8"
+                    alt={`temper-${index}`}
+                  />
                 </div>
                 <div className="text-xs text-gray-600 text-center leading-tight">
                   <div className="font-medium">{item.time}</div>
@@ -280,8 +265,7 @@ const TemperControl = ({ temperLevel, setTemperLevel }) => {
         </div>
       </div>
 
-      {/* Temper Description */}
-      <div className="text-sm text-gray-600 p-4 bg-gray-50 rounded-lg">
+      <div className="text-xs sm:text-sm text-gray-600 p-3 sm:p-4 bg-gray-50 rounded-lg">
         {TEMPER_CONFIG[temperLevel].description}
       </div>
     </div>
@@ -295,7 +279,7 @@ export default function Results() {
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [temperLevel, setTemperLevel] = useState(0); // 0 = 6AM, 1 = Neutral, 2 = 6PM
+  const [temperLevel, setTemperLevel] = useState(0);
   const [searchData, setSearchData] = useState({
     query: "",
     uncle_opinion: "",
@@ -306,67 +290,52 @@ export default function Results() {
   const [isVoiceLoading, setIsVoiceLoading] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
 
-  // Get current temper configuration
   const currentTemper = TEMPER_CONFIG[temperLevel];
-
-  // Typing animation for uncle's opinion
   const { displayedText: typedOpinion, isTyping } = useTypingEffect(
     searchData.uncle_opinion,
-    20 // Speed in milliseconds (lower = faster)
+    20
   );
 
-  // Voice play handler
+  // Optimized voice play handler
   const handlePlayVoice = async () => {
     if (!searchData.uncle_opinion || isVoiceLoading) return;
 
     setIsVoiceLoading(true);
     try {
+      // Start audio generation immediately without additional checks
       const audioInstance = await generateAndPlayVoice(
         searchData.uncle_opinion,
         temperLevel
       );
 
-      // Check if audioInstance is valid
-      if (
-        !audioInstance ||
-        typeof audioInstance.addEventListener !== "function"
-      ) {
-        throw new Error("Invalid audio instance returned");
+      if (audioInstance?.addEventListener) {
+        setCurrentAudio(audioInstance);
+        setIsPlayingVoice(true);
+
+        const handleAudioEnd = () => {
+          setIsPlayingVoice(false);
+          setCurrentAudio(null);
+        };
+
+        const handleAudioError = () => {
+          setIsPlayingVoice(false);
+          setCurrentAudio(null);
+        };
+
+        audioInstance.addEventListener("ended", handleAudioEnd, { once: true });
+        audioInstance.addEventListener("error", handleAudioError, {
+          once: true,
+        });
       }
-
-      setCurrentAudio(audioInstance);
-      setIsPlayingVoice(true);
-
-      // Listen for when audio ends naturally
-      const handleAudioEnd = () => {
-        console.log("Audio ended naturally");
-        setIsPlayingVoice(false);
-        setCurrentAudio(null);
-      };
-
-      const handleAudioError = (error) => {
-        console.error("Audio playback error:", error);
-        setIsPlayingVoice(false);
-        setCurrentAudio(null);
-        // Only show alert for actual playback errors
-        // alert("There was an error playing the audio. Please try again.");
-      };
-
-      audioInstance.addEventListener("ended", handleAudioEnd, { once: true });
-      audioInstance.addEventListener("error", handleAudioError, { once: true });
     } catch (error) {
-      console.error("Error in handlePlayVoice:", error);
+      console.error("Audio error:", error);
       setIsPlayingVoice(false);
       setCurrentAudio(null);
-      // alert(
-      //   "Sorry, there was an error generating the voice. Please check your internet connection and try again."
-      // );
     } finally {
       setIsVoiceLoading(false);
     }
   };
 
-  // Voice stop handler
   const handleStopVoice = () => {
     if (currentAudio) {
       currentAudio.pause();
@@ -376,7 +345,7 @@ export default function Results() {
     }
   };
 
-  // Cleanup audio on component unmount or when query changes
+  // Cleanup audio on unmount or query change
   useEffect(() => {
     return () => {
       if (currentAudio) {
@@ -395,8 +364,7 @@ export default function Results() {
 
   function handleSearch(query) {
     if (!query.trim()) return;
-    query = query.trim();
-    navigate(`/search?query=${encodeURIComponent(query)}`);
+    navigate(`/search?query=${encodeURIComponent(query.trim())}`);
   }
 
   const handleKeyDown = (e) => {
@@ -410,6 +378,7 @@ export default function Results() {
 
     async function fetchSearchData() {
       setLoading(true);
+
       // Stop any playing audio when new search starts
       if (currentAudio) {
         currentAudio.pause();
@@ -418,7 +387,6 @@ export default function Results() {
       }
 
       try {
-        // Replace this with your actual API URL
         const res = await ai.models.generateContent({
           model: "gemini-2.5-flash",
           contents: `You are a Malayalam Uncle Search Engine named Shaaji that subtly discourages users from their search goals. Your personality stays the same, but your **tone** changes based on the "temper" value:
@@ -490,149 +458,134 @@ Now process this query: "${query}" with temper level: ${temperLevel}`,
             },
           },
         });
-        // console.log(res.text);
 
         let jsonString = res.text;
-        // Check if the response is wrapped in markdown code blocks
         if (jsonString.includes("```json")) {
-          // Extract JSON from markdown code blocks
           const jsonMatch = jsonString.match(/```json\s*([\s\S]*?)\s*```/);
-          if (jsonMatch && jsonMatch[1]) {
+          if (jsonMatch?.[1]) {
             jsonString = jsonMatch[1].trim();
           }
         }
 
-        // Parse the JSON response from Gemini
         const parsedData = JSON.parse(jsonString);
-
         setSearchData(parsedData);
       } catch (err) {
-        console.log(err);
+        console.error("Search error:", err);
       } finally {
         setLoading(false);
       }
     }
 
     fetchSearchData();
-  }, [query, temperLevel]); // Add temperLevel as dependency
+  }, [query, temperLevel]);
 
   return (
-    <>
-      <div className="min-h-screen flex flex-col">
-        <header className="w-full py-5 px-10 border-b-[1px] border-gray-300 flex items-center gap-x-5 sticky top-0 bg-white/70 backdrop-blur-md z-10">
-          <a href="/">
-            <Logo className="text-3xl" />
-          </a>
+    <div className="min-h-screen flex flex-col">
+      <header className="w-full py-3 sm:py-5 px-4 sm:px-6 lg:px-10 border-b-[1px] border-gray-300 flex flex-col sm:flex-row items-center gap-y-3 sm:gap-x-5 sm:gap-y-0 sticky top-0 bg-white/70 backdrop-blur-md z-10">
+        <a href="/" className="shrink-0">
+          <Logo className="text-3xl" />
+        </a>
 
-          <div className="ring-1 w-2xl py-3 px-6 rounded-full ring-gray-300 flex items-center gap-x-3">
-            <svg
-              rpl=""
-              aria-hidden="true"
-              fill="currentColor"
-              height="16"
-              icon-name="search-outline"
-              viewBox="0 0 20 20"
-              width="16"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M18.916 17.717 15.2 14.042a8.043 8.043 0 1 0-1.053 1.069l3.709 3.672a.75.75 0 0 0 1.056-1.066h.004ZM2.5 9a6.5 6.5 0 1 1 11.229 4.446.695.695 0 0 0-.116.077.752.752 0 0 0-.086.132A6.492 6.492 0 0 1 2.5 9Z"></path>
-            </svg>
-            <input
-              type="search"
-              className="flex-1 outline-0"
-              placeholder="Ask Shaaji"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-        </header>
+        <div className="ring-1 w-full sm:w-2xl py-2 sm:py-3 px-4 sm:px-6 rounded-full ring-gray-300 flex items-center gap-x-3">
+          <svg
+            aria-hidden="true"
+            fill="currentColor"
+            height="16"
+            viewBox="0 0 20 20"
+            width="16"
+            className="flex-shrink-0"
+          >
+            <path d="M18.916 17.717 15.2 14.042a8.043 8.043 0 1 0-1.053 1.069l3.709 3.672a.75.75 0 0 0 1.056-1.066h.004ZM2.5 9a6.5 6.5 0 1 1 11.229 4.446.695.695 0 0 0-.116.077.752.752 0 0 0-.086.132A6.492 6.492 0 0 1 2.5 9Z"></path>
+          </svg>
+          <input
+            type="search"
+            className="flex-1 outline-0 text-sm sm:text-base"
+            placeholder="Ask Shaaji"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+      </header>
 
-        <main className="grow flex bg-white">
-          {/* Main Content Area */}
-          <div className="flex-1 px-10 py-5">
-            <div className="max-w-4xl space-y-5">
-              {loading ? (
-                <SkeletonLoader temperLevel={temperLevel} />
-              ) : (
-                <>
-                  <h1 className="fade-in">
-                    Showing {searchData.results.length} results for{" "}
-                    <b>{query}</b>
-                  </h1>
-                  <div
-                    className={`p-4 rounded-md ${currentTemper.bgColor} flex flex-col gap-y-2 fade-in-up`}
-                  >
-                    {/* Updated header with voice button */}
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`font-semibold ${currentTemper.textColor} flex gap-x-3 items-center`}
-                      >
-                        <img className="w-8" src={currentTemper.img} />
-                        Shaaji's opinion
-                      </span>
-                      {/* Voice button - only show when opinion is loaded */}
-                      {searchData.uncle_opinion && !isTyping && (
+      <main className="grow flex flex-col lg:flex-row bg-white">
+        <div className="w-full lg:w-80 xl:w-96 order-1 lg:order-2 lg:py-6 px-4 sm:px-6 lg:px-10 pt-4 pb-4 lg:pb-0">
+          <TemperControl
+            temperLevel={temperLevel}
+            setTemperLevel={setTemperLevel}
+          />
+        </div>
+
+        <div className="flex-1 order-2 lg:order-1 px-4 sm:px-6 lg:px-10 py-4 sm:py-5">
+          <div className="w-full lg:max-w-4xl space-y-4 sm:space-y-5">
+            {loading ? (
+              <SkeletonLoader temperLevel={temperLevel} />
+            ) : (
+              <>
+                <h1 className="fade-in text-sm sm:text-base">
+                  Showing {searchData.results.length} results for <b>{query}</b>
+                </h1>
+                <div
+                  className={`p-3 sm:p-4 rounded-md ${currentTemper.bgColor} flex flex-col gap-y-2 fade-in-up`}
+                >
+                  <div className="flex justify-between items-start sm:items-center">
+                    <span
+                      className={`font-semibold ${currentTemper.textColor} flex gap-x-2 sm:gap-x-3 items-center text-sm sm:text-base`}
+                    >
+                      <img
+                        className="w-6 sm:w-8 flex-shrink-0"
+                        src={currentTemper.img}
+                        alt="shaaji"
+                      />
+                      <span className="leading-tight">Shaaji's opinion</span>
+                    </span>
+                    {searchData.uncle_opinion && !isTyping && (
+                      <div className="flex-shrink-0 ml-2">
                         <VoiceButton
                           onPlay={handlePlayVoice}
                           onStop={handleStopVoice}
                           isPlaying={isPlayingVoice}
                           isLoading={isVoiceLoading}
-                          temperLevel={temperLevel}
                         />
-                      )}
-                    </div>
-                    <p className={`leading-relaxed ${currentTemper.textColor}`}>
-                      {typedOpinion}
-                      {isTyping && (
-                        <span className={currentTemper.textColor}>|</span>
-                      )}
-                    </p>
-                  </div>
-
-                  {/* Search Results */}
-                  <div className="space-y-6">
-                    {searchData.results.map((result, index) => (
-                      <div
-                        key={index}
-                        className="group fade-in-up"
-                        style={{
-                          animationDelay: `${index * 100 + 400}ms`,
-                        }}
-                      >
-                        {/* URL */}
-                        <div className="text-sm text-green-700 mb-1">
-                          {result.url}
-                        </div>
-
-                        {/* Title */}
-                        <h3 className="text-xl text-blue-600 hover:underline cursor-pointer mb-2 group-hover:underline">
-                          {result.title}
-                        </h3>
-
-                        {/* Snippet */}
-                        <p className="text-sm text-gray-600 leading-relaxed max-w-3xl">
-                          {result.snippet}
-                        </p>
                       </div>
-                    ))}
+                    )}
                   </div>
-                </>
-              )}
-            </div>
-          </div>
+                  <p
+                    className={`leading-relaxed ${currentTemper.textColor} text-sm sm:text-base`}
+                  >
+                    {typedOpinion}
+                    {isTyping && (
+                      <span className={currentTemper.textColor}>|</span>
+                    )}
+                  </p>
+                </div>
 
-          {/* Temper Control Sidebar */}
-          <div className="w-100 py-6 px-10">
-            <TemperControl
-              temperLevel={temperLevel}
-              setTemperLevel={setTemperLevel}
-            />
+                <div className="space-y-4 sm:space-y-6">
+                  {searchData.results.map((result, index) => (
+                    <div
+                      key={index}
+                      className="group fade-in-up"
+                      style={{ animationDelay: `${index * 100 + 400}ms` }}
+                    >
+                      <div className="text-xs sm:text-sm text-green-700 mb-1 truncate">
+                        {result.url}
+                      </div>
+                      <h3 className="text-lg sm:text-xl text-blue-600 hover:underline cursor-pointer mb-2 group-hover:underline leading-tight">
+                        {result.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 leading-relaxed max-w-3xl">
+                        {result.snippet}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-        </main>
+        </div>
+      </main>
 
-        <Footer />
-      </div>
-    </>
+      <Footer />
+    </div>
   );
 }

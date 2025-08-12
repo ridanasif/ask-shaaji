@@ -49,12 +49,19 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex flex-col justify-center items-center grow gap-y-5">
-        <div className="flex items-center gap-x-4">
-          <Logo className="text-8xl" />
-          <img src="mascot.png" className="w-17" alt="Shaaji mascot" />
+      <div className="flex flex-col justify-center items-center grow gap-y-3 sm:gap-y-5 py-8 sm:py-0 px-4 sm:px-6 lg:px-8">
+        {/* Logo and mascot section - always horizontal */}
+        <div className="flex items-center gap-x-3 sm:gap-x-4">
+          <Logo className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl" />
+          <img
+            src="mascot.png"
+            className="w-14 sm:w-16 md:w-17"
+            alt="Shaaji mascot"
+          />
         </div>
-        <div className="ring-1 w-2xl py-3 px-6 rounded-full shadow-md ring-gray-300 flex items-center gap-x-3">
+
+        {/* Search bar - full width on mobile with margins */}
+        <div className="ring-1 w-full max-w-2xl py-2 sm:py-3 px-4 sm:px-6 rounded-full shadow-md ring-gray-300 flex items-center gap-x-3">
           <svg
             rpl=""
             aria-hidden="true"
@@ -64,12 +71,13 @@ export default function Home() {
             viewBox="0 0 20 20"
             width="16"
             xmlns="http://www.w3.org/2000/svg"
+            className="flex-shrink-0"
           >
             <path d="M18.916 17.717 15.2 14.042a8.043 8.043 0 1 0-1.053 1.069l3.709 3.672a.75.75 0 0 0 1.056-1.066h.004ZM2.5 9a6.5 6.5 0 1 1 11.229 4.446.695.695 0 0 0-.116.077.752.752 0 0 0-.086.132A6.492 6.492 0 0 1 2.5 9Z"></path>
           </svg>
           <input
             type="search"
-            className="flex-1 outline-0"
+            className="flex-1 outline-0 text-sm sm:text-base"
             placeholder="Ask Shaaji"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -77,6 +85,7 @@ export default function Home() {
           />
         </div>
 
+        {/* Buttons - always side by side */}
         <div className="flex gap-x-2">
           <Button
             text="Shaaji Search"
