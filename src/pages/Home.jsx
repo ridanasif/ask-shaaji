@@ -5,6 +5,13 @@ import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 
 export default function Home() {
+
+  const isDev = import.meta.env.DEV;
+  const hasClientKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const useClientSide = isDev && hasClientKey;
+
+  console.log("is developing: " + isDev);
+
   const queries = [
     "How to convince parents to let me go on a trip with friends?",
     "Malayalam love quotes for Instagram bio",

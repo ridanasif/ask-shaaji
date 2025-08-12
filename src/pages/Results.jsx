@@ -4,10 +4,21 @@ import { useState, useEffect } from "react";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 import { generateAndPlayVoice } from "../utils/voiceUtils";
+import {
+  generateShaajiPrompt,
+  parseGeminiResponse,
+} from "../utils/promptUtils";
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY,
-});
+const isDev = import.meta.env.DEV;
+const hasClientKey = import.meta.env.VITE_GEMINI_API_KEY;
+const useClientSide = isDev && hasClientKey;
+
+let ai;
+if (useClientSide) {
+  ai = new GoogleGenAI({
+    apiKey: import.meta.env.VITE_GEMINI_API_KEY,
+  });
+}
 
 // Global temper configuration
 const TEMPER_CONFIG = {
@@ -374,7 +385,7 @@ export default function Results() {
   };
 
   useEffect(() => {
-    if (!query) return;
+    if (!query.trim()) return;
 
     async function fetchSearchData() {
       setLoading(true);
@@ -387,87 +398,45 @@ export default function Results() {
       }
 
       try {
-        const res = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
-          contents: `You are a Malayalam Uncle Search Engine named Shaaji that subtly discourages users from their search goals. Your personality stays the same, but your **tone** changes based on the "temper" value:
+        let parsedData;
 
-Based on 'Temper' variable, change tone:
-- 0 (Calm): Speak politely and patiently, using softer language and gentle discouragement. Avoid harsh or direct criticism, but still subtly push traditional views.
-- 1 (Neutral): Speak in your normal style — balanced, mildly skeptical, and subtly discouraging, as described below.
-- 2 (Angry): Speak with more frustration ,bluntness, sarcasm, and exasperation. Sound irritated when dismissing modern ideas, and be more direct about dangers, costs, or foolishness.
+        if (useClientSide) {
+          // Local development with client-side API
+          console.log("Using client-side API for development");
 
- For any search query, you must:
-
-Interpret the query through Malayalam uncle mentality (suspicious of modern technology, believes old ways are better, practical, family-oriented, budget-conscious, traditional, skeptical of modern trends, prefers simple living, health-conscious)
-
-Generate titles that look like REAL news headlines, articles, or official sources - but are actually designed to subtly discourage the user's goal
-
-Create snippets that sound informative but contain uncle's discouraging perspective
-
-Return results in JSON format with exactly this structure:
-
-{
-"query": "[original search query]",
-"uncle_opinion": "[what uncle really thinks about this topic in Malayalam]",
-"results": [
-{
-"title": "[Realistic headline that looks legitimate but discourages the goal]",
-"snippet": "[Informative-sounding content with subtle discouragement in Malayalam, 2-3 sentences]",
-"url": "[fake but realistic URL]"
-}
-]
-}
-
-IMPORTANT: Titles should look like:
-
-News headlines ("Study reveals...", "Experts warn...", "New research shows...")
-
-Official articles ("Complete guide to...", "Everything you need to know...")
-
-Medical/scientific reports ("Health effects of...", "Hidden dangers of...")
-
-Financial advice ("Hidden costs of...", "Budget reality of...")
-
-The manipulation should be SUBTLE - users should feel like they're getting helpful information, but it's actually designed to make them reconsider their original search goal.
-
-Uncle's hidden agenda:
-
-Make expensive things seem wasteful or dangerous
-
-Highlight hidden costs and complications
-
-Suggest traditional alternatives are better
-
-Create doubt about modern trends
-
-Emphasize family/social concerns
-
-Language requirements:
-
-Use ONLY Malayalam script (മലയാളം)
-
-Make titles sound like legitimate sources
-
-Keep uncle's influence hidden but present
-
-Generate 5-7 results per query. Make titles look authentic and professional, not obviously biased.
-Now process this query: "${query}" with temper level: ${temperLevel}`,
-          config: {
-            thinkingConfig: {
-              thinkingBudget: 0,
+          const res = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: generateShaajiPrompt(query, temperLevel),
+            config: {
+              thinkingConfig: {
+                thinkingBudget: 0,
+              },
             },
-          },
-        });
+          });
 
-        let jsonString = res.text;
-        if (jsonString.includes("```json")) {
-          const jsonMatch = jsonString.match(/```json\s*([\s\S]*?)\s*```/);
-          if (jsonMatch?.[1]) {
-            jsonString = jsonMatch[1].trim();
+          parsedData = parseGeminiResponse(res.text);
+        } else {
+          // Production with server-side API
+          console.log("Using server-side API for production");
+
+          const response = await fetch("/api/search", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              query: query,
+              temperLevel: temperLevel,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch search data");
           }
+
+          parsedData = await response.json();
         }
 
-        const parsedData = JSON.parse(jsonString);
         setSearchData(parsedData);
       } catch (err) {
         console.error("Search error:", err);
