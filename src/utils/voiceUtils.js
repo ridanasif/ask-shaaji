@@ -93,23 +93,29 @@ function createWavHeader(dataLength, options) {
 export async function preloadVoice(text, temperLevel = 0) {
   try {
     // Map temper level to voice characteristics
-    const voiceConfig = {
-      0: "Orus", // Calm voice
-      1: "Orus", // Neutral voice
-      2: "Orus", // Angry voice
-    };
-
     const config = {
       temperature: 1,
       responseModalities: ["audio"],
       speechConfig: {
         voiceConfig: {
           prebuiltVoiceConfig: {
-            voiceName: voiceConfig[temperLevel] || "Orus",
+            voiceName: "Orus",
           },
         },
       },
     };
+
+    switch (temperLevel) {
+      case 1:
+        text = `Say neutrally: ${text}`;
+        break;
+      case 2:
+        text = `Say angrily and in an unpleasant tone: ${text}`;
+        break;
+      default:
+        text = `Say happily: ${text}`;
+        break;
+    }
 
     const model = "gemini-2.5-flash-preview-tts";
     const contents = [
