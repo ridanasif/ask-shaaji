@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
   const { query, temperLevel } = req.body;
 
-  if (!query) {
+  if (!query.trim()) {
     return res.status(400).json({ error: "Query is required" });
   }
 
