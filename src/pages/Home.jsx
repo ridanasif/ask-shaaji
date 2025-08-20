@@ -49,6 +49,17 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <div className="w-full p-2 text-sm text-center bg-red-200 text-red-900">
+        Huge traffic from{" "}
+        <a
+          className="text-blue-700"
+          href="https://www.reddit.com/r/Coconaad/comments/1mvdpbi/we_built_an_ammavan_search_engine/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+        >
+          Reddit
+        </a>{" "}
+        pushed us past our AI limit — we’re fixing it now, please check back
+        soon.
+      </div>
       <div className="flex flex-col justify-center items-center grow gap-y-3 sm:gap-y-5 py-8 sm:py-0 px-4 sm:px-6 lg:px-8">
         {/* Logo and mascot section - always horizontal */}
         <div className="flex items-center gap-x-3 sm:gap-x-4">
