@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="w-full p-2 text-sm text-center bg-red-200 text-red-900">
+      <div className="w-full p-2 text-sm font-medium text-center bg-red-200 text-red-900">
         Huge traffic from{" "}
         <a
           className="text-blue-700"

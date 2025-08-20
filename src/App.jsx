@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "./App.css";
 import Home from "./pages/Home";
 import Results from "./pages/Results";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Results />} />
+          <Route path="*" element={<NotFound/>} />
         </Routes>
       </Router>
       <SpeedInsights />
