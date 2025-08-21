@@ -65,7 +65,7 @@ export default function Home() {
         <div className="flex items-center gap-x-3 sm:gap-x-4">
           <Logo className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl" />
           <img
-            src="mascot-1.png"
+            src="mascot.png"
             className="w-12 sm:w-14 md:w-15"
             alt="Shaaji mascot"
           />
