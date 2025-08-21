@@ -53,7 +53,7 @@ export default function Home() {
         Huge traffic from{" "}
         <a
           className="text-blue-700"
-          href="https://www.reddit.com/r/Coconaad/comments/1mvdpbi/we_built_an_ammavan_search_engine/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+          href="https://www.reddit.com/r/Kerala/comments/1mve7xf/we_built_an_ammavan_search_engine/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
         >
           Reddit
         </a>{" "}

@@ -413,8 +413,6 @@ export default function Results() {
           parsedData = parseGeminiResponse(res.text);
         } else {
           // Production with server-side API
-          console.log("Using server-side API for production");
-
           const response = await fetch("/api/search", {
             method: "POST",
             headers: {
