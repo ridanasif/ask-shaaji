@@ -48,8 +48,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="w-full p-2 text-sm font-medium text-center bg-red-200 text-red-900">
+    <div className="min-h-screen flex flex-col dark:bg-neutral-900">
+      <div className="w-full p-2 text-sm font-medium text-center dark:bg-red-400  bg-red-200 text-red-900">
         Huge traffic from{" "}
         <a
           className="text-blue-700"
@@ -65,14 +65,14 @@ export default function Home() {
         <div className="flex items-center gap-x-3 sm:gap-x-4">
           <Logo className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl" />
           <img
-            src="mascot.png"
-            className="w-14 sm:w-16 md:w-17"
+            src="mascot-1.png"
+            className="w-12 sm:w-14 md:w-15"
             alt="Shaaji mascot"
           />
         </div>
 
         {/* Search bar - full width on mobile with margins */}
-        <div className="ring-1 w-full max-w-2xl py-2 sm:py-3 px-4 sm:px-6 rounded-full shadow-md ring-gray-300 flex items-center gap-x-3">
+        <div className="ring-1 w-full max-w-2xl py-2 sm:py-3 px-4 sm:px-6 rounded-full shadow-md ring-gray-300 flex items-center gap-x-3 dark:bg-neutral-800 dark:ring-neutral-700">
           <svg
             rpl=""
             aria-hidden="true"
@@ -82,13 +82,13 @@ export default function Home() {
             viewBox="0 0 20 20"
             width="16"
             xmlns="http://www.w3.org/2000/svg"
-            className="flex-shrink-0"
+            className="flex-shrink-0 dark:text-neutral-100"
           >
             <path d="M18.916 17.717 15.2 14.042a8.043 8.043 0 1 0-1.053 1.069l3.709 3.672a.75.75 0 0 0 1.056-1.066h.004ZM2.5 9a6.5 6.5 0 1 1 11.229 4.446.695.695 0 0 0-.116.077.752.752 0 0 0-.086.132A6.492 6.492 0 0 1 2.5 9Z"></path>
           </svg>
           <input
             type="search"
-            className="flex-1 outline-0 text-sm sm:text-base"
+            className="flex-1 outline-0 text-sm sm:text-base dark:placeholder-neutral-100 dark:text-neutral-100"
             placeholder="Ask Shaaji"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

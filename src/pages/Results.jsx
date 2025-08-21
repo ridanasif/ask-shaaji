@@ -25,7 +25,7 @@ const TEMPER_CONFIG = {
   0: {
     img: "mascot-head-happy.png",
     time: "6 AM",
-    bgColor: "bg-blue-100",
+    bgColor: "bg-blue-100 dark:bg-blue-200",
     textColor: "text-blue-900",
     gradientColor: "#3b82f6",
     description:
@@ -34,7 +34,7 @@ const TEMPER_CONFIG = {
   1: {
     img: "mascot-head.png",
     time: "12 PM",
-    bgColor: "bg-orange-100",
+    bgColor: "bg-orange-100 dark:bg-orange-200",
     textColor: "text-orange-900",
     gradientColor: "#f97316",
     description:
@@ -43,7 +43,7 @@ const TEMPER_CONFIG = {
   2: {
     img: "mascot-head-angry.png",
     time: "6 PM",
-    bgColor: "bg-red-100",
+    bgColor: "bg-red-100 dark:bg-red-200",
     textColor: "text-red-900",
     gradientColor: "#ef4444",
     description:
@@ -113,7 +113,7 @@ const SkeletonLoader = ({ temperLevel }) => {
 
   return (
     <div className="space-y-4 sm:space-y-5 grow animate-pulse">
-      <div className="h-4 sm:h-6 bg-gray-200 rounded w-48 sm:w-64"></div>
+      <div className="h-4 sm:h-6 bg-gray-200 rounded w-48 sm:w-64 dark:bg-neutral-800"></div>
       <div
         className={`p-3 sm:p-4 rounded-md ${currentTemper.bgColor} flex flex-col gap-y-2`}
       >
@@ -124,11 +124,11 @@ const SkeletonLoader = ({ temperLevel }) => {
       <div className="space-y-4 sm:space-y-6">
         {[...Array(5)].map((_, index) => (
           <div key={index} className="group">
-            <div className="h-3 sm:h-4 bg-green-100 rounded w-32 sm:w-48 mb-1"></div>
-            <div className="h-5 sm:h-6 bg-blue-100 rounded w-64 sm:w-96 mb-2"></div>
+            <div className="h-3 sm:h-4 bg-green-100 dark:bg-teal-200 rounded w-32 sm:w-48 mb-1"></div>
+            <div className="h-5 sm:h-6 bg-blue-100 dark:bg-blue-200 rounded w-64 sm:w-96 mb-2"></div>
             <div className="space-y-1">
-              <div className="h-3 sm:h-4 bg-gray-100 rounded w-full"></div>
-              <div className="h-3 sm:h-4 bg-gray-100 rounded w-4/5 sm:w-5/6"></div>
+              <div className="h-3 sm:h-4 bg-gray-100 dark:bg-neutral-700 rounded w-full"></div>
+              <div className="h-3 sm:h-4 bg-gray-100 dark:bg-neutral-700 rounded w-4/5 sm:w-5/6"></div>
             </div>
           </div>
         ))}
@@ -138,7 +138,8 @@ const SkeletonLoader = ({ temperLevel }) => {
 };
 
 // Optimized Voice Button Component
-const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading }) => {
+const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
+  const currentTemper = TEMPER_CONFIG[temperLevel];
   const handleClick = () => {
     if (isPlaying) {
       onStop();
@@ -166,7 +167,7 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading }) => {
     >
       {isLoading ? (
         <svg
-          className="w-5 h-5 animate-spin text-blue-900"
+          className={`w-5 h-5 animate-spin ${currentTemper.textColor}`}
           fill="none"
           viewBox="0 0 24 24"
         >
@@ -186,7 +187,7 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading }) => {
         </svg>
       ) : isPlaying ? (
         <svg
-          className="w-5 h-5 text-blue-900"
+          className={`w-5 h-5 ${currentTemper.textColor}`}
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -194,7 +195,7 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading }) => {
         </svg>
       ) : (
         <svg
-          className="w-5 h-5 text-blue-900"
+          className={`w-5 h-5 ${currentTemper.textColor}`}
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -206,18 +207,14 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading }) => {
 };
 
 const TemperControl = ({ temperLevel, setTemperLevel }) => {
-  const getSliderBackground = () => {
-    return `linear-gradient(to right, #3b82f6 0%, #f97316 50%, #ef4444 100%)`;
-  };
-
   const getCurrentThumbColor = () => {
     return TEMPER_CONFIG[temperLevel].gradientColor;
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 lg:sticky lg:top-24">
+    <div className="bg-white dark:bg-neutral-800 rounded-xl border border-gray-200 dark:border-neutral-700 p-4 sm:p-6 lg:sticky lg:top-24">
       <div className="text-center mb-4 sm:mb-6">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">
+        <h3 className="text-base sm:text-lg font-semibold mb-2 dark:text-neutral-100">
           Shaaji's Temper
         </h3>
         <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
@@ -229,7 +226,7 @@ const TemperControl = ({ temperLevel, setTemperLevel }) => {
             />
           </span>
           <div className="text-center">
-            <div className="font-medium text-gray-700 text-sm sm:text-base">
+            <div className="font-medium text-gray-700 text-sm sm:text-base dark:text-neutral-300">
               {TEMPER_CONFIG[temperLevel].time}
             </div>
           </div>
@@ -238,12 +235,9 @@ const TemperControl = ({ temperLevel, setTemperLevel }) => {
 
       <div className="mb-4 sm:mb-6">
         <div className="relative">
-          <div
-            className="h-2 sm:h-3 rounded-full mb-3 sm:mb-4"
-            style={{ background: getSliderBackground() }}
-          >
+          <div className="h-2 sm:h-3 rounded-full mb-3 sm:mb-4 bg-gradient-to-r from-blue-400 via-yellow-400 to-red-400">
             <div
-              className="absolute top-0 w-5 h-5 sm:w-6 sm:h-6 bg-white border-2 rounded-full shadow-md cursor-pointer transform -translate-y-1 sm:-translate-y-1.5 transition-all duration-200 hover:border-gray-600"
+              className="absolute top-0 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-neutral-900 border-2 rounded-full shadow-md cursor-pointer transform -translate-y-1 sm:-translate-y-1.5 transition-all duration-200 hover:border-gray-600"
               style={{
                 left: `calc(${(temperLevel / 2) * 100}% - 10px)`,
                 borderColor: getCurrentThumbColor(),
@@ -256,8 +250,10 @@ const TemperControl = ({ temperLevel, setTemperLevel }) => {
               <button
                 key={index}
                 onClick={() => setTemperLevel(index)}
-                className={`flex flex-col items-center p-1 sm:p-2 rounded-lg transition-all duration-200 cursor-pointer hover:bg-gray-50 ${
-                  temperLevel === index ? "bg-gray-100 shadow-sm" : ""
+                className={`flex flex-col items-center p-1 sm:p-2 rounded-lg transition-all duration-200 cursor-pointer dark:hover:bg-neutral-600 hover:bg-gray-50 ${
+                  temperLevel === index
+                    ? "bg-gray-100 dark:bg-neutral-700 shadow-sm"
+                    : ""
                 }`}
               >
                 <div className="text-base sm:text-xl mb-1">
@@ -267,7 +263,7 @@ const TemperControl = ({ temperLevel, setTemperLevel }) => {
                     alt={`temper-${index}`}
                   />
                 </div>
-                <div className="text-xs text-gray-600 text-center leading-tight">
+                <div className="text-xs text-gray-600 text-center leading-tight dark:text-neutral-300">
                   <div className="font-medium">{item.time}</div>
                 </div>
               </button>
@@ -276,7 +272,7 @@ const TemperControl = ({ temperLevel, setTemperLevel }) => {
         </div>
       </div>
 
-      <div className="text-xs sm:text-sm text-gray-600 p-3 sm:p-4 bg-gray-50 rounded-lg">
+      <div className="text-xs sm:text-sm text-gray-600 p-3 sm:p-4 bg-gray-50 rounded-lg dark:bg-neutral-700 dark:text-neutral-300">
         {TEMPER_CONFIG[temperLevel].description}
       </div>
     </div>
@@ -450,25 +446,25 @@ export default function Results() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="w-full py-3 sm:py-5 px-4 sm:px-6 lg:px-10 border-b-[1px] border-gray-300 flex flex-col sm:flex-row items-center gap-y-3 sm:gap-x-5 sm:gap-y-0 sticky top-0 bg-white/70 backdrop-blur-md z-10">
+      <header className="w-full py-3 sm:py-5 px-4 sm:px-6 lg:px-10 border-b-[1px] border-gray-300 flex flex-col sm:flex-row items-center gap-y-3 sm:gap-x-5 sm:gap-y-0 sticky top-0 bg-white/70 backdrop-blur-md z-10 dark:bg-neutral-900 dark:border-neutral-700">
         <a href="/" className="shrink-0">
           <Logo className="text-3xl" />
         </a>
 
-        <div className="ring-1 w-full sm:w-2xl py-2 sm:py-3 px-4 sm:px-6 rounded-full ring-gray-300 flex items-center gap-x-3">
+        <div className="ring-1 w-full sm:w-2xl py-2 sm:py-3 px-4 sm:px-6 rounded-full ring-gray-300 flex items-center gap-x-3 dark:bg-neutral-800 dark:ring-neutral-700">
           <svg
             aria-hidden="true"
             fill="currentColor"
             height="16"
             viewBox="0 0 20 20"
             width="16"
-            className="flex-shrink-0"
+            className="flex-shrink-0 dark:text-neutral-100"
           >
             <path d="M18.916 17.717 15.2 14.042a8.043 8.043 0 1 0-1.053 1.069l3.709 3.672a.75.75 0 0 0 1.056-1.066h.004ZM2.5 9a6.5 6.5 0 1 1 11.229 4.446.695.695 0 0 0-.116.077.752.752 0 0 0-.086.132A6.492 6.492 0 0 1 2.5 9Z"></path>
           </svg>
           <input
             type="search"
-            className="flex-1 outline-0 text-sm sm:text-base"
+            className="flex-1 outline-0 text-sm sm:text-base dark:placeholder-neutral-100 dark:text-neutral-100"
             placeholder="Ask Shaaji"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -477,7 +473,7 @@ export default function Results() {
         </div>
       </header>
 
-      <main className="grow flex flex-col lg:flex-row bg-white">
+      <main className="grow flex flex-col lg:flex-row bg-white dark:bg-neutral-900">
         <div className="w-full lg:w-80 xl:w-96 order-1 lg:order-2 lg:py-6 px-4 sm:px-6 lg:px-10 pt-4 pb-4 lg:pb-0">
           <TemperControl
             temperLevel={temperLevel}
@@ -491,7 +487,7 @@ export default function Results() {
               <SkeletonLoader temperLevel={temperLevel} />
             ) : (
               <>
-                <h1 className="fade-in text-sm sm:text-base">
+                <h1 className="fade-in text-sm sm:text-base dark:text-neutral-100">
                   Showing {searchData.results.length} results for <b>{query}</b>
                 </h1>
                 <div
@@ -515,6 +511,7 @@ export default function Results() {
                           onStop={handleStopVoice}
                           isPlaying={isPlayingVoice}
                           isLoading={isVoiceLoading}
+                          temperLevel={temperLevel}
                         />
                       </div>
                     )}
@@ -536,13 +533,13 @@ export default function Results() {
                       className="group fade-in-up"
                       style={{ animationDelay: `${index * 100 + 400}ms` }}
                     >
-                      <div className="text-xs sm:text-sm text-green-700 mb-1 truncate">
+                      <div className="text-xs sm:text-sm dark:text-teal-500 text-green-700 mb-1 truncate">
                         {result.url}
                       </div>
-                      <h3 className="text-lg sm:text-xl text-blue-600 hover:underline cursor-pointer mb-2 group-hover:underline leading-tight">
+                      <h3 className="text-lg sm:text-xl dark:text-blue-400 text-blue-600 hover:underline cursor-pointer mb-2 group-hover:underline leading-tight">
                         {result.title}
                       </h3>
-                      <p className="text-sm text-gray-600 leading-relaxed max-w-3xl">
+                      <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed max-w-3xl">
                         {result.snippet}
                       </p>
                     </div>
