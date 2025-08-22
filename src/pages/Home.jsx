@@ -60,6 +60,7 @@ export default function Home() {
         pushed us past our AI limit — we’re fixing it now, please check back
         soon.
       </div>
+
       <div className="flex flex-col justify-center items-center grow gap-y-3 sm:gap-y-5 py-8 sm:py-0 px-4 sm:px-6 lg:px-8">
         {/* Logo and mascot section - always horizontal */}
         <div className="flex items-center gap-x-3 sm:gap-x-4">
@@ -95,6 +96,10 @@ export default function Home() {
             onKeyDown={handleKeyDown}
           />
         </div>
+
+        <a href="/founders" className="text-sm md:text-base text-blue-400">
+          Meet the founders!
+        </a>
 
         {/* Buttons - always side by side */}
         <div className="flex gap-x-2">

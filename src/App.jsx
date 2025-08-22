@@ -5,6 +5,7 @@ import "./App.css";
 import Home from "./pages/Home";
 import Results from "./pages/Results";
 import NotFound from "./pages/NotFound";
+import Founders from "./pages/Founders";
 
 function App() {
   return (
@@ -13,7 +14,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Results />} />
-          <Route path="*" element={<NotFound/>} />
+          <Route path="/founders" element={<Founders />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
       <SpeedInsights />
