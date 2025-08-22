@@ -3,6 +3,12 @@ import {
   generateShaajiPrompt,
   parseGeminiResponse,
 } from "../src/utils/promptUtils.js";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 const API_KEYS = [
   process.env.GEMINI_API_KEY,
@@ -45,8 +51,14 @@ async function attemptWithFallback(query, temperLevel) {
           },
         },
       });
-
-      return parseGeminiResponse(res_ai.text);
+      const result = parseGeminiResponse(res_ai.text);
+      const {} = await supabase.from("search_queries").insert([
+        {
+          search_query: query,
+          search_result: result.uncle_opinion,
+        },
+      ]);
+      return result;
     } catch (error) {
       if (!isRateLimitError(error)) {
         throw new Error("Service temporarily unavailable");
