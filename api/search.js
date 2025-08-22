@@ -16,6 +16,7 @@ const API_KEYS = [
 function isRateLimitError(error) {
   const errorMessage = error.message?.toLowerCase() || "";
   const errorCode = error.code || error.status;
+  const errorStatus = error.error?.status?.toLowerCase() || "";
 
   return (
     errorCode === 429 ||
@@ -54,9 +55,6 @@ async function attemptWithFallback(query, temperLevel) {
       if (i === API_KEYS.length - 1) {
         throw new Error("Service temporarily unavailable due to high demand");
       }
-
-      // Add a small delay between retries
-      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
 }
