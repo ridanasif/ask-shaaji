@@ -1,5 +1,6 @@
-import { TEMPER_CONFIG } from "../pages/Results";
+import { useClientSide, TEMPER_CONFIG } from "../constants/app";
 import { useState } from "react";
+
 const wrapText = (ctx, text, x, y, maxWidth, lineHeight, maxLines = null) => {
   const words = text.split(" ");
   let lines = [];
@@ -346,11 +347,20 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
               downloadImage(blob);
             }
           } catch (shareError) {
-            console.error("Share error:", shareError);
             // Fallback to download on share error
             downloadImage(blob);
+          } finally {
+            if (!useClientSide) {
+              fetch("/api/share", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  query: query,
+                  uncle_opinion: opinion,
+                }),
+              });
+            }
           }
-
           setIsSharing(false);
         },
         "image/png",

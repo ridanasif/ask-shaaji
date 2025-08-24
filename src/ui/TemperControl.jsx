@@ -1,4 +1,4 @@
-import { TEMPER_CONFIG } from "../pages/Results";
+import { TEMPER_CONFIG } from "../constants/app";
 const TemperControl = ({ temperLevel, setTemperLevel }) => {
   const getCurrentThumbColor = () => {
     return TEMPER_CONFIG[temperLevel].gradientColor;

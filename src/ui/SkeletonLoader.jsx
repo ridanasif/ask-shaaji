@@ -1,4 +1,4 @@
-import { TEMPER_CONFIG } from "../pages/Results";
+import { TEMPER_CONFIG } from "../constants/app";
 import { useState, useEffect } from "react";
 const ThinkingAnimation = ({ temperLevel }) => {
   const [dots, setDots] = useState("");
