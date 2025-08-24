@@ -7,8 +7,8 @@ export default function Logo({ className = "" }) {
         <span className="text-red-500 dark:text-white">h</span>
         <span className="text-yellow-500 dark:text-white">a</span>
         <span className="text-blue-500 dark:text-white">a</span>
-        <span className="text-green-600 dark:text-white">j</span>
-        <span className="text-red-600 dark:text-white">i</span>
+        <span className="text-green-500 dark:text-white">j</span>
+        <span className="text-red-500 dark:text-white">i</span>
       </h1>
     </>
   );

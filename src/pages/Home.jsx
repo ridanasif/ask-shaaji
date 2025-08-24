@@ -43,6 +43,7 @@ export default function Home() {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
+      e.target.blur();
       handleSearch(searchQuery);
     }
   };

@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
+import ShareButton from "../ui/ShareButton";
+import SkeletonLoader from "../ui/SkeletonLoader";
+import TemperControl from "../ui/TemperControl";
 import { generateAndPlayVoice } from "../utils/voiceUtils";
 import {
   generateShaajiPrompt,
@@ -21,7 +24,7 @@ if (useClientSide) {
 }
 
 // Global temper configuration
-const TEMPER_CONFIG = {
+export const TEMPER_CONFIG = {
   0: {
     img: "mascot-head-happy.png",
     time: "6 AM",
@@ -82,60 +85,6 @@ const useTypingEffect = (text, speed = 50) => {
   return { displayedText, isTyping };
 };
 
-const ThinkingAnimation = ({ temperLevel }) => {
-  const [dots, setDots] = useState("");
-  const currentTemper = TEMPER_CONFIG[temperLevel];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots((prev) => (prev === "..." ? "" : prev + "."));
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <span
-      className={`${currentTemper.textColor} font-semibold flex items-center gap-x-3`}
-    >
-      <img
-        className="w-8 animate-spin"
-        src={currentTemper.img}
-        alt="thinking"
-      />
-      Shaaji is thinking{dots}
-    </span>
-  );
-};
-
-const SkeletonLoader = ({ temperLevel }) => {
-  const currentTemper = TEMPER_CONFIG[temperLevel];
-
-  return (
-    <div className="space-y-4 sm:space-y-5 grow animate-pulse">
-      <div className="h-4 sm:h-6 bg-gray-200 rounded w-48 sm:w-64 dark:bg-neutral-800"></div>
-      <div
-        className={`p-3 sm:p-4 rounded-md ${currentTemper.bgColor} flex flex-col gap-y-2`}
-      >
-        <p className="leading-relaxed">
-          <ThinkingAnimation temperLevel={temperLevel} />
-        </p>
-      </div>
-      <div className="space-y-4 sm:space-y-6">
-        {[...Array(5)].map((_, index) => (
-          <div key={index} className="group">
-            <div className="h-3 sm:h-4 bg-green-100 dark:bg-teal-200 rounded w-32 sm:w-48 mb-1"></div>
-            <div className="h-5 sm:h-6 bg-blue-100 dark:bg-blue-200 rounded w-64 sm:w-96 mb-2"></div>
-            <div className="space-y-1">
-              <div className="h-3 sm:h-4 bg-gray-100 dark:bg-neutral-700 rounded w-full"></div>
-              <div className="h-3 sm:h-4 bg-gray-100 dark:bg-neutral-700 rounded w-4/5 sm:w-5/6"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
 
 // Optimized Voice Button Component
 const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
@@ -203,79 +152,6 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
         </svg>
       )}
     </button>
-  );
-};
-
-const TemperControl = ({ temperLevel, setTemperLevel }) => {
-  const getCurrentThumbColor = () => {
-    return TEMPER_CONFIG[temperLevel].gradientColor;
-  };
-
-  return (
-    <div className="bg-white dark:bg-neutral-800 rounded-xl border border-gray-200 dark:border-neutral-700 p-4 sm:p-6 lg:sticky lg:top-24">
-      <div className="text-center mb-4 sm:mb-6">
-        <h3 className="text-base sm:text-lg font-semibold mb-2 dark:text-neutral-100">
-          Shaaji's Temper
-        </h3>
-        <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
-          <span className="text-xl sm:text-2xl">
-            <img
-              src={TEMPER_CONFIG[temperLevel].img}
-              className="w-8 sm:w-10"
-              alt="temper"
-            />
-          </span>
-          <div className="text-center">
-            <div className="font-medium text-gray-700 text-sm sm:text-base dark:text-neutral-300">
-              {TEMPER_CONFIG[temperLevel].time}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-4 sm:mb-6">
-        <div className="relative">
-          <div className="h-2 sm:h-3 rounded-full mb-3 sm:mb-4 bg-gradient-to-r from-blue-400 via-yellow-400 to-red-400">
-            <div
-              className="absolute top-0 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-neutral-900 border-2 rounded-full shadow-md cursor-pointer transform -translate-y-1 sm:-translate-y-1.5 transition-all duration-200 hover:border-gray-600"
-              style={{
-                left: `calc(${(temperLevel / 2) * 100}% - 10px)`,
-                borderColor: getCurrentThumbColor(),
-              }}
-            />
-          </div>
-
-          <div className="flex justify-between">
-            {Object.values(TEMPER_CONFIG).map((item, index) => (
-              <button
-                key={index}
-                onClick={() => setTemperLevel(index)}
-                className={`flex flex-col items-center p-1 sm:p-2 rounded-lg transition-all duration-200 cursor-pointer dark:hover:bg-neutral-600 hover:bg-gray-50 ${
-                  temperLevel === index
-                    ? "bg-gray-100 dark:bg-neutral-700 shadow-sm"
-                    : ""
-                }`}
-              >
-                <div className="text-base sm:text-xl mb-1">
-                  <img
-                    src={item.img}
-                    className="w-6 sm:w-8"
-                    alt={`temper-${index}`}
-                  />
-                </div>
-                <div className="text-xs text-gray-600 text-center leading-tight dark:text-neutral-300">
-                  <div className="font-medium">{item.time}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="text-xs sm:text-sm text-gray-600 p-3 sm:p-4 bg-gray-50 rounded-lg dark:bg-neutral-700 dark:text-neutral-300">
-        {TEMPER_CONFIG[temperLevel].description}
-      </div>
-    </div>
   );
 };
 
@@ -376,6 +252,7 @@ export default function Results() {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
+      e.target.blur();
       handleSearch(searchQuery);
     }
   };
@@ -522,6 +399,18 @@ export default function Results() {
                       <span className={currentTemper.textColor}>|</span>
                     )}
                   </p>
+
+                  {/* Share Button - positioned in bottom right */}
+                  {searchData.uncle_opinion && !isTyping && (
+                    <div className="flex justify-end">
+                      <ShareButton
+                        query={query}
+                        opinion={searchData.uncle_opinion}
+                        temperLevel={temperLevel}
+                        isVisible={true}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4 sm:space-y-6">
