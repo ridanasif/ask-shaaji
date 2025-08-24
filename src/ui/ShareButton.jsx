@@ -1,38 +1,89 @@
 import { useClientSide, TEMPER_CONFIG } from "../constants/app";
 import { useState } from "react";
 
-const wrapText = (ctx, text, x, y, maxWidth, lineHeight, maxLines = null) => {
+// Shared helper function for text wrapping logic
+const getWrappedLines = (ctx, text, maxWidth) => {
+  // 1. New helper function to break apart a single long word
+  const breakWord = (word) => {
+    const brokenLines = [];
+    let currentSubLine = "";
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      const testSubLine = currentSubLine + char;
+      // If the sub-line is now too wide, push the previous version and start a new one
+      if (ctx.measureText(testSubLine).width > maxWidth) {
+        brokenLines.push(currentSubLine);
+        currentSubLine = char;
+      } else {
+        currentSubLine = testSubLine;
+      }
+    }
+    // Push the last remaining part of the word
+    if (currentSubLine !== "") {
+      brokenLines.push(currentSubLine);
+    }
+    return brokenLines;
+  };
+
+  // 2. Main wrapping logic, now smarter
   const words = text.split(" ");
   let lines = [];
-  let currentLine = words[0] || "";
+  let currentLine = "";
 
-  // 1. Let the loop wrap all the text normally.
-  for (let i = 1; i < words.length; i++) {
+  for (let i = 0; i < words.length; i++) {
     const word = words[i];
-    const testLine = currentLine + " " + word;
-    const width = ctx.measureText(testLine).width;
 
-    if (width < maxWidth) {
+    // --- NEW LOGIC STARTS HERE ---
+    // First, check if the word itself is too long to fit on any line
+    if (ctx.measureText(word).width > maxWidth) {
+      // If there was text on the current line, push it to lines first
+      if (currentLine !== "") {
+        lines.push(currentLine.trim());
+        currentLine = "";
+      }
+      // Use our new helper to break the long word and add all its pieces
+      const brokenPieces = breakWord(word);
+      lines.push(...brokenPieces);
+      continue; // Skip the rest of the loop and move to the next word
+    }
+    // --- NEW LOGIC ENDS HERE ---
+
+    // Original logic for adding words to a line
+    const testLine = currentLine === "" ? word : `${currentLine} ${word}`;
+
+    if (ctx.measureText(testLine).width < maxWidth) {
       currentLine = testLine;
     } else {
       lines.push(currentLine);
       currentLine = word;
     }
   }
-  lines.push(currentLine);
 
-  // 2. After all lines are wrapped, handle truncation if maxLines is set.
+  // Add the last line if it's not empty
+  if (currentLine !== "") {
+    lines.push(currentLine);
+  }
+
+  return lines;
+};
+
+// Refactored wrapText function
+const wrapText = (ctx, text, x, y, maxWidth, lineHeight, maxLines = null) => {
+  // 1. Use shared helper to get wrapped lines
+  let lines = getWrappedLines(ctx, text, maxWidth);
+
+  // 2. Handle truncation if maxLines is set (this was the unique logic)
   if (maxLines && lines.length > maxLines) {
-    // Trim the array to the max number of lines.
+    // Trim the array to the max number of lines
     lines = lines.slice(0, maxLines);
 
     // Get the last visible line and truncate it with "..."
     let lastLine = lines[maxLines - 1];
     const ellipsis = "...";
 
-    // Keep removing the last word until the line + ellipsis fits.
+    // Keep removing the last word until the line + ellipsis fits
     while (ctx.measureText(lastLine + ellipsis).width > maxWidth) {
-      // Handle the edge case where even the first word is too long.
+      // Handle the edge case where even the first word is too long
       if (!lastLine.includes(" ")) {
         lastLine = "";
         break;
@@ -40,17 +91,30 @@ const wrapText = (ctx, text, x, y, maxWidth, lineHeight, maxLines = null) => {
       lastLine = lastLine.substring(0, lastLine.lastIndexOf(" "));
     }
 
-    // Update the last line in the array.
+    // Update the last line in the array
     lines[maxLines - 1] = lastLine.trim() + ellipsis;
   }
 
-  // 3. Draw the final, correctly formatted lines.
+  // 3. Draw the final, correctly formatted lines (unique to wrapText)
   lines.forEach((line, index) => {
     ctx.fillText(line, x, y + index * lineHeight);
   });
 
   return lines;
 };
+
+// Refactored measureText function - much simpler now!
+const measureText = (ctx, text, maxWidth, lineHeight) => {
+  // Use shared helper to get wrapped lines
+  const lines = getWrappedLines(ctx, text, maxWidth);
+
+  return {
+    lines: lines,
+    height: lines.length * lineHeight,
+    lineCount: lines.length,
+  };
+};
+
 // Function to draw image maintaining aspect ratio within a circle
 const drawImageInCircle = (ctx, image, centerX, centerY, radius) => {
   ctx.save();
@@ -92,94 +156,172 @@ const drawImageInCircle = (ctx, image, centerX, centerY, radius) => {
 
 function generateShareImage(query, opinion, temperLevel) {
   return new Promise((resolve, reject) => {
+    // --- START: Refactored Layout System ---
+
+    // 1. Define a centralized layout configuration object.
+    // This creates a consistent and symmetrical spacing system.
+    const LAYOUT = {
+      width: 1200,
+      minHeight: 630,
+      borderRadius: 24,
+      padding: {
+        outer: 80, // Symmetrical padding around the main content box
+        inner: 40, // Symmetrical padding inside the content box
+      },
+      spacing: {
+        medium: 20, // Space between related items (e.g., query and opinion)
+        large: 40, // Space between major sections (e.g., header and text block)
+      },
+      header: {
+        height: 80, // Fixed height for the header area (mascot + title)
+        mascotRadius: 35,
+        titleSpacing: 20, // Space between mascot and title text
+      },
+      footer: {
+        height: 30, // Fixed height for the footer text area
+      },
+      font: {
+        query: "bold 28px Poppins, sans-serif",
+        opinion: "26px Arial, sans-serif",
+        title: "bold 36px Cal Sans, sans-serif",
+        footer: "20px Poppins, sans-serif",
+      },
+      lineHeight: {
+        query: 38,
+        opinion: 34,
+      },
+    };
+
+    // --- END: Refactored Layout System ---
+
+    // Create a temporary canvas for text measurement
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d");
+
+    // Set up the context for measurement
+    const dpr = window.devicePixelRatio || 1;
+    tempCtx.scale(dpr, dpr);
+    tempCtx.textBaseline = "top";
+
+    // 2. Calculate dynamic dimensions based on the LAYOUT object
+    const contentWidth = LAYOUT.width - LAYOUT.padding.outer * 2;
+    const textWidth = contentWidth - LAYOUT.padding.inner * 2;
+
+    // Measure query text
+    tempCtx.font = LAYOUT.font.query;
+    const queryMeasurement = measureText(
+      tempCtx,
+      query,
+      textWidth,
+      LAYOUT.lineHeight.query
+    );
+    const queryHeight = queryMeasurement.height;
+
+    // Measure opinion text
+    tempCtx.font = LAYOUT.font.opinion;
+    const opinionMeasurement = measureText(
+      tempCtx,
+      opinion,
+      textWidth,
+      LAYOUT.lineHeight.opinion
+    );
+    const opinionHeight = opinionMeasurement.height;
+
+    // 3. Calculate total canvas height symmetrically
+    const totalContentHeight =
+      LAYOUT.padding.inner + // Top inner padding
+      LAYOUT.header.height + // Header section
+      LAYOUT.spacing.large + // Space after header
+      queryHeight + // Dynamic query height
+      LAYOUT.spacing.medium + // Space between query and opinion
+      opinionHeight + // Dynamic opinion height
+      LAYOUT.spacing.large + // Symmetrical space before footer
+      LAYOUT.footer.height + // Footer section
+      LAYOUT.padding.inner; // Bottom inner padding
+
+    const canvasHeight = Math.max(
+      LAYOUT.minHeight,
+      totalContentHeight + LAYOUT.padding.outer * 2
+    );
+
+    // Create the actual canvas with calculated dimensions
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    // Set canvas dimensions for social media friendly aspect ratio
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = 1200 * dpr;
-    canvas.height = 630 * dpr;
-    canvas.style.width = "1200px";
-    canvas.style.height = "630px";
+    // Set canvas dimensions
+    canvas.width = LAYOUT.width * dpr;
+    canvas.height = canvasHeight * dpr;
+    canvas.style.width = LAYOUT.width + "px";
+    canvas.style.height = canvasHeight + "px";
 
-    // Scale the context to ensure correct drawing operations
+    // Scale the context and set quality properties
     ctx.scale(dpr, dpr);
-
-    // Enable text antialiasing for crisp text
     ctx.textBaseline = "top";
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
     const currentTemper = TEMPER_CONFIG[temperLevel || 0];
 
-    // Load the correct mascot image based on temperLevel
     const mascotImage = new Image();
     mascotImage.crossOrigin = "anonymous";
-
     let imageLoaded = false;
     let timeoutId;
 
     const drawCanvas = () => {
       try {
-        // Create canvas background
-        ctx.fillStyle = currentTemper.gradientColor;
-        ctx.fillRect(0, 0, 1200, 630);
+        // --- Drawing logic using the new LAYOUT object ---
 
-        // Add subtle pattern overlay
+        // Canvas background
+        ctx.fillStyle = currentTemper.gradientColor;
+        ctx.fillRect(0, 0, LAYOUT.width, canvasHeight);
+
+        // Subtle pattern overlay
         ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
-        for (let i = 0; i < 1200; i += 40) {
-          for (let j = 0; j < 630; j += 40) {
+        for (let i = 0; i < LAYOUT.width; i += 40) {
+          for (let j = 0; j < canvasHeight; j += 40) {
             if ((i + j) % 80 === 0) {
               ctx.fillRect(i, j, 2, 2);
             }
           }
         }
 
-        // Add main content area with rounded rectangle
-        const contentX = 80;
-        const contentY = 80;
-        const contentWidth = 1200 - 160;
-        const contentHeight = 630 - 160;
+        // Main content area with rounded rectangle and shadow
+        const contentX = LAYOUT.padding.outer;
+        const contentY = LAYOUT.padding.outer;
+        const actualContentHeight = canvasHeight - LAYOUT.padding.outer * 2;
 
-        ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-        ctx.beginPath();
-        ctx.roundRect(contentX, contentY, contentWidth, contentHeight, 20);
-        ctx.fill();
-
-        // Add shadow
+        ctx.save();
         ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
         ctx.shadowBlur = 20;
         ctx.shadowOffsetY = 10;
-
-        // Redraw the content area with shadow
-        ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+        ctx.fillStyle = "#FFFFFF";
         ctx.beginPath();
-        ctx.roundRect(contentX, contentY, contentWidth, contentHeight, 20);
+        ctx.roundRect(
+          contentX,
+          contentY,
+          contentWidth,
+          actualContentHeight,
+          LAYOUT.borderRadius
+        );
         ctx.fill();
+        ctx.restore(); // Reset shadow
 
-        // Reset shadow
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetY = 0;
-
-        // Draw mascot image with proper aspect ratio
-        const mascotRadius = 40;
-        const mascotCenterX = contentX + 40 + mascotRadius;
-        const mascotCenterY = contentY + 40 + mascotRadius;
+        // --- Header Section ---
+        const headerY = contentY + LAYOUT.padding.inner;
+        const mascotCenterX =
+          contentX + LAYOUT.padding.inner + LAYOUT.header.mascotRadius;
+        const mascotCenterY = headerY + LAYOUT.header.height / 2;
 
         drawImageInCircle(
           ctx,
           imageLoaded ? mascotImage : null,
           mascotCenterX,
           mascotCenterY,
-          mascotRadius
+          LAYOUT.header.mascotRadius
         );
 
         const drawColorfulText = (ctx, text, x, y, font, colors) => {
           ctx.font = font;
-          ctx.textAlign = "left";
-          ctx.textBaseline = "middle";
-
           let currentX = x;
           for (let i = 0; i < text.length; i++) {
             const letter = text[i];
@@ -197,82 +339,76 @@ function generateShareImage(query, opinion, temperLevel) {
           "#22c55e",
           "#ef4444",
         ];
+        const titleX =
+          mascotCenterX +
+          LAYOUT.header.mascotRadius +
+          LAYOUT.header.titleSpacing;
 
-        // Add "Shaaji" header - vertically centered with mascot
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
-        const headerX = mascotCenterX + mascotRadius + 15;
         drawColorfulText(
           ctx,
           "Shaaji",
-          headerX,
+          titleX,
           mascotCenterY,
-          "bold 36px Cal Sans, sans-serif",
+          LAYOUT.font.title,
           googleColors
         );
+        ctx.textBaseline = "top"; // Reset for subsequent text blocks
 
-        // Calculate layout spacing with proper margins
-        const queryStartY = contentY + 160;
-        const maxQueryLines = 1;
-        const lineHeight = 38;
+        // --- Text Content Section ---
+        const textStartX = contentX + LAYOUT.padding.inner;
+        let currentY = headerY + LAYOUT.header.height + LAYOUT.spacing.large;
 
-        // Query text with line limit - bold
-        ctx.font = "bold 28px Poppins, sans-serif";
+        // Query text
+        ctx.font = LAYOUT.font.query;
         ctx.fillStyle = "#333";
-        const queryLines = wrapText(
+        wrapText(
           ctx,
           query,
-          contentX + 50,
-          queryStartY,
-          contentWidth - 100,
-          lineHeight,
-          maxQueryLines
+          textStartX,
+          currentY,
+          textWidth,
+          LAYOUT.lineHeight.query
         );
 
-        // Calculate opinion start position with tighter spacing
-        const opinionStartY =
-          queryStartY +
-          Math.min(queryLines.length, maxQueryLines) * lineHeight +
-          25;
+        // Move to opinion position
+        currentY += queryHeight + LAYOUT.spacing.medium;
 
-        // Calculate available space for opinion with margins
-        const footerHeight = 80;
-        const availableHeight =
-          contentY + contentHeight - footerHeight - opinionStartY;
-        const maxOpinionLines = Math.floor(availableHeight / 34);
-
-        // Opinion text with proper margins and line limiting
-        ctx.font = "26px Arial, sans-serif";
+        // Opinion text
+        ctx.font = LAYOUT.font.opinion;
         ctx.fillStyle = "#333";
-
-        const opinionLines = wrapText(
+        wrapText(
           ctx,
           opinion,
-          contentX + 50,
-          opinionStartY,
-          contentWidth - 100,
-          34,
-          maxOpinionLines
+          textStartX,
+          currentY,
+          textWidth,
+          LAYOUT.lineHeight.opinion
         );
 
-        // Add footer with generous margins
-        const footerY = contentY + contentHeight - 50;
+        // --- Footer Section ---
+        const footerY =
+          contentY +
+          actualContentHeight -
+          LAYOUT.padding.inner -
+          LAYOUT.footer.height;
         ctx.fillStyle = "#999";
-        ctx.font = "20px Poppins, sans-serif";
-        ctx.letterSpacing = "-0.5px";
-        ctx.textAlign = "left";
-        ctx.fillText("Generated by Ask Shaaji", contentX + 50, footerY);
+        ctx.font = LAYOUT.font.footer;
 
-        // Add website attribution on the right with margin
+        // Left-aligned footer text
+        ctx.textAlign = "left";
+        ctx.fillText("Generated by Ask Shaaji", textStartX, footerY);
+
+        // Right-aligned footer text
         ctx.textAlign = "right";
         ctx.fillText(
           "https://ask-shaaji.vercel.app",
-          contentX + contentWidth - 50,
+          contentX + contentWidth - LAYOUT.padding.inner,
           footerY
         );
 
-        // Reset text alignment
-        ctx.textAlign = "left";
+        ctx.textAlign = "left"; // Reset alignment
 
         resolve(canvas);
       } catch (error) {
@@ -292,18 +428,18 @@ function generateShareImage(query, opinion, temperLevel) {
       drawCanvas();
     };
 
-    // Set timeout to proceed without image after 2 seconds
     timeoutId = setTimeout(() => {
-      console.warn("Image loading timeout, proceeding without image");
-      drawCanvas();
+      if (!imageLoaded) {
+        console.warn("Image loading timeout, proceeding without image");
+        drawCanvas();
+      }
     }, 2000);
 
-    // Use the correct image based on temperLevel and fix the path
-    // Replace with your actual image path - this should work in your environment
     mascotImage.src = `/${currentTemper.img}`;
   });
 }
 
+// The rest of the file (ShareButton component) remains the same
 const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
   const [isSharing, setIsSharing] = useState(false);
   const currentTemper = TEMPER_CONFIG[temperLevel];
@@ -313,6 +449,8 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
 
     setIsSharing(true);
     try {
+      // Wait for fonts to be ready before generating the image
+      await document.fonts.ready;
       // Wait for the canvas to be properly generated
       const canvas = await generateShareImage(query, opinion, temperLevel);
 
@@ -350,6 +488,7 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
             // Fallback to download on share error
             downloadImage(blob);
           } finally {
+            setIsSharing(false);
             if (!useClientSide) {
               fetch("/api/share", {
                 method: "POST",
@@ -361,7 +500,6 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
               });
             }
           }
-          setIsSharing(false);
         },
         "image/png",
         0.9
