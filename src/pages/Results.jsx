@@ -328,7 +328,7 @@ export default function Results() {
             ) : (
               <>
                 <h1 className="fade-in text-sm sm:text-base dark:text-neutral-100">
-                  Showing {searchData.results.length} results for <b>{query}</b>
+                  Showing <b>{searchData.results.length}</b> results
                 </h1>
                 <div
                   className={`p-3 sm:p-4 rounded-md ${currentTemper.bgColor} flex flex-col gap-y-2 fade-in-up`}

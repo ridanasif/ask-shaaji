@@ -17,7 +17,6 @@ Create snippets that sound informative but contain uncle's discouraging perspect
 Return results in JSON format with exactly this structure:
 
 {
-"query": "[original search query]",
 "uncle_opinion": "[what uncle really thinks about this topic in Malayalam]",
 "results": [
 {

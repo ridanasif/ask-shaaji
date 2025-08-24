@@ -50,16 +50,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col dark:bg-neutral-900">
-      <div className="w-full p-2 text-sm font-medium text-center dark:bg-red-400  bg-red-200 text-red-900">
-        Huge traffic from{" "}
+      <div className="w-full p-2 text-sm font-medium text-center dark:bg-green-400  bg-green-200 text-green-900">
         <a
           className="text-blue-700"
           href="https://www.reddit.com/r/Kerala/comments/1mve7xf/we_built_an_ammavan_search_engine/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
         >
           Reddit
         </a>{" "}
-        pushed us past our AI limit — we’re fixing it now, please check back
-        soon.
+        sent huge traffic that pushed us past our AI limit — we’ve fixed it and
+        are so back, enjoy!
       </div>
 
       <div className="flex flex-col justify-center items-center grow gap-y-3 sm:gap-y-5 py-8 sm:py-0 px-4 sm:px-6 lg:px-8">
@@ -98,9 +97,24 @@ export default function Home() {
           />
         </div>
 
-        <a href="/founders" className="text-sm md:text-base text-blue-400">
-          Meet the founders!
-        </a>
+        <span className="text-center text-sm md:text-base text-yellow-600 dark:text-yellow-400">
+          Love what we built? Support us via{" "}
+          <a
+            href="upi://pay?pa=ridhaanasif@okicici&pn=Ridan%20Asif&cu=INR"
+            target="_blank"
+            className="underline font-bold"
+          >
+            UPI
+          </a>{" "}
+          or{" "}
+          <a
+            href="https://buymeacoffee.com/ridanasif"
+            target="_blank"
+            className="underline font-bold"
+          >
+            Buy Me a Coffee!
+          </a>
+        </span>
 
         {/* Buttons - always side by side */}
         <div className="flex gap-x-2">
