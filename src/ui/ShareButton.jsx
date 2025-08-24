@@ -213,7 +213,7 @@ function generateShareImage(query, opinion, temperLevel) {
 
         // Calculate layout spacing with proper margins
         const queryStartY = contentY + 160;
-        const maxQueryLines = 2;
+        const maxQueryLines = 1;
         const lineHeight = 38;
 
         // Query text with line limit - bold
@@ -389,7 +389,7 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
     <button
       onClick={handleShare}
       disabled={isSharing}
-      className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 hover:scale-105 ${
+      className={`flex items-center gap-2 px-2 rounded-full transition-all duration-300 hover:scale-105 ${
         isSharing
           ? "cursor-not-allowed opacity-50"
           : "cursor-pointer hover:shadow-lg"
@@ -431,8 +431,8 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
           />
         </svg>
       )}
-      <span className={`text-sm font-medium ${currentTemper.textColor}`}>
-        {isSharing ? "Creating..." : "Share"}
+      <span className={`text-xs font-medium ${currentTemper.textColor}`}>
+        {isSharing ? "Creating..." : "Share Photo"}
       </span>
     </button>
   );

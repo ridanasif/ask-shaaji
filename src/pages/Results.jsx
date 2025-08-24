@@ -342,10 +342,17 @@ export default function Results() {
                         src={currentTemper.img}
                         alt="shaaji"
                       />
-                      <span className="leading-tight">Shaaji's opinion</span>
+                      <span className="leading-tight">Shaaji's Opinion</span>
                     </span>
+
                     {searchData.uncle_opinion && !isTyping && (
-                      <div className="flex-shrink-0 ml-2">
+                      <div className="flex gap-x-2 flex-shrink-0">
+                        <ShareButton
+                          query={query}
+                          opinion={searchData.uncle_opinion}
+                          temperLevel={temperLevel}
+                          isVisible={true}
+                        />
                         <VoiceButton
                           onPlay={handlePlayVoice}
                           onStop={handleStopVoice}
@@ -364,18 +371,6 @@ export default function Results() {
                       <span className={currentTemper.textColor}>|</span>
                     )}
                   </p>
-
-                  {/* Share Button - positioned in bottom right */}
-                  {searchData.uncle_opinion && !isTyping && (
-                    <div className="flex justify-end">
-                      <ShareButton
-                        query={query}
-                        opinion={searchData.uncle_opinion}
-                        temperLevel={temperLevel}
-                        isVisible={true}
-                      />
-                    </div>
-                  )}
                 </div>
 
                 <div className="space-y-4 sm:space-y-6">
