@@ -2,9 +2,10 @@ import { TEMPER_CONFIG } from "../pages/Results";
 import { useState } from "react";
 const wrapText = (ctx, text, x, y, maxWidth, lineHeight, maxLines = null) => {
   const words = text.split(" ");
-  const lines = [];
+  let lines = [];
   let currentLine = words[0] || "";
 
+  // 1. Let the loop wrap all the text normally.
   for (let i = 1; i < words.length; i++) {
     const word = words[i];
     const testLine = currentLine + " " + word;
@@ -15,56 +16,40 @@ const wrapText = (ctx, text, x, y, maxWidth, lineHeight, maxLines = null) => {
     } else {
       lines.push(currentLine);
       currentLine = word;
-
-      // If we have a max line limit and we're approaching it
-      if (maxLines && lines.length >= maxLines - 1) {
-        // Add remaining words to current line with ellipsis if needed
-        const remainingWords = words.slice(i);
-        if (remainingWords.length > 0) {
-          let truncatedLine = currentLine;
-          const ellipsis = "...";
-
-          // Try to fit as many remaining words as possible
-          for (let j = 0; j < remainingWords.length; j++) {
-            const testWithWord = truncatedLine + " " + remainingWords[j];
-            const testWithEllipsis = testWithWord + ellipsis;
-
-            if (ctx.measureText(testWithEllipsis).width < maxWidth) {
-              truncatedLine = testWithWord;
-            } else {
-              truncatedLine = truncatedLine + ellipsis;
-              break;
-            }
-          }
-
-          if (!truncatedLine.endsWith(ellipsis) && remainingWords.length > 0) {
-            truncatedLine += ellipsis;
-          }
-
-          currentLine = truncatedLine;
-        }
-        break;
-      }
     }
   }
   lines.push(currentLine);
 
-  // Limit lines if maxLines is specified
+  // 2. After all lines are wrapped, handle truncation if maxLines is set.
   if (maxLines && lines.length > maxLines) {
-    lines.splice(maxLines);
-    if (lines[maxLines - 1] && !lines[maxLines - 1].endsWith("...")) {
-      lines[maxLines - 1] += "...";
+    // Trim the array to the max number of lines.
+    lines = lines.slice(0, maxLines);
+
+    // Get the last visible line and truncate it with "..."
+    let lastLine = lines[maxLines - 1];
+    const ellipsis = "...";
+
+    // Keep removing the last word until the line + ellipsis fits.
+    while (ctx.measureText(lastLine + ellipsis).width > maxWidth) {
+      // Handle the edge case where even the first word is too long.
+      if (!lastLine.includes(" ")) {
+        lastLine = "";
+        break;
+      }
+      lastLine = lastLine.substring(0, lastLine.lastIndexOf(" "));
     }
+
+    // Update the last line in the array.
+    lines[maxLines - 1] = lastLine.trim() + ellipsis;
   }
 
-  // Draw the lines
+  // 3. Draw the final, correctly formatted lines.
   lines.forEach((line, index) => {
     ctx.fillText(line, x, y + index * lineHeight);
   });
 
   return lines;
 };
-
 // Function to draw image maintaining aspect ratio within a circle
 const drawImageInCircle = (ctx, image, centerX, centerY, radius) => {
   ctx.save();
