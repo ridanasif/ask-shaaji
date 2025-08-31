@@ -414,10 +414,16 @@ export default function ShaajiScan() {
   }, [cancelGeneration]);
 
   useEffect(() => {
+    const videoElement = videoRef.current;
+    // Return the cleanup function
     return () => {
-      stopCamera();
+      if (videoElement && videoElement.srcObject) {
+        const tracks = videoElement.srcObject.getTracks();
+        tracks.forEach((track) => track.stop());
+        videoElement.srcObject = null; // Also good practice to nullify it
+      }
     };
-  }, [stopCamera]);
+  }, []);
 
   const captureImage = useCallback(() => {
     if (
