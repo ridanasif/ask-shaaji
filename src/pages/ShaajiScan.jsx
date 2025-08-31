@@ -7,9 +7,11 @@ import {
   AlertTriangle,
   Download,
   X,
+  ArrowLeft,
 } from "lucide-react";
 import { GoogleGenAI } from "@google/genai";
 import { useClientSide } from "../constants/app";
+import { Link } from "react-router-dom";
 
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
@@ -535,6 +537,9 @@ export default function ShaajiScan() {
 
       <header className="w-full p-6 z-10 absolute top-0 flex items-center justify-between">
         <div className="flex items-center gap-x-3">
+          <Link to="/">
+            <ArrowLeft className="cursor-pointer dark:text-neutral-100" />
+          </Link>
           <h1 className="cal-sans text-2xl">Shaaji Scan</h1>
           <span className="text-blue-500 text-sm px-2 py-1 ring-1 ring-blue-500 rounded-full">
             BETA
