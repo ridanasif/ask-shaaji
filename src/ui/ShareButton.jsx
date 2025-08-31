@@ -1,6 +1,8 @@
 import { useClientSide, TEMPER_CONFIG } from "../constants/app";
 import { useState } from "react";
+import { useAlert } from "../context/AlertContext";
 
+const GENERAL_ERROR_MESSAGE = "Failed to generate image!";
 // Shared helper function for text wrapping logic
 const getWrappedLines = (ctx, text, maxWidth) => {
   // 1. New helper function to break apart a single long word
@@ -441,6 +443,8 @@ function generateShareImage(query, opinion, temperLevel) {
 
 // The rest of the file (ShareButton component) remains the same
 const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
+  const { showAlert } = useAlert();
+
   const [isSharing, setIsSharing] = useState(false);
   const currentTemper = TEMPER_CONFIG[temperLevel];
 
@@ -459,6 +463,7 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
         async (blob) => {
           if (!blob) {
             console.error("Failed to generate image blob");
+            showAlert(GENERAL_ERROR_MESSAGE);
             setIsSharing(false);
             return;
           }
@@ -506,6 +511,7 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
       );
     } catch (error) {
       console.error("Canvas generation error:", error);
+      showAlert(GENERAL_ERROR_MESSAGE);
       setIsSharing(false);
     }
   };

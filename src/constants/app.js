@@ -1,10 +1,10 @@
 export const isDev = import.meta.env.DEV;
 export const hasClientKey = import.meta.env.VITE_GEMINI_API_KEY;
 export const useClientSide = isDev && hasClientKey; // Global temper configuration
-
+export const TEMPER_STORAGE_KEY = "shaaji_temper_level";
 export const TEMPER_CONFIG = {
   0: {
-    img: "mascot-head-happy.png",
+    img: "maveli-head-happy.png",
     time: "6 AM",
     bgColor: "bg-blue-100 dark:bg-blue-200",
     textColor: "text-blue-900",
@@ -13,7 +13,7 @@ export const TEMPER_CONFIG = {
       "Morning Shaaji is calm and gentle, giving thoughtful advice with patience.",
   },
   1: {
-    img: "mascot-head.png",
+    img: "maveli-head.png",
     time: "12 PM",
     bgColor: "bg-orange-100 dark:bg-orange-200",
     textColor: "text-orange-900",
@@ -22,7 +22,7 @@ export const TEMPER_CONFIG = {
       "Neutral Shaaji is balanced, mixing wisdom with mild skepticism.",
   },
   2: {
-    img: "mascot-head-angry.png",
+    img: "maveli-head-angry.png",
     time: "6 PM",
     bgColor: "bg-red-100 dark:bg-red-200",
     textColor: "text-red-900",

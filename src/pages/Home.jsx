@@ -1,35 +1,44 @@
 import { useState } from "react";
 import Button from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
+import { Settings } from "lucide-react";
 
 export default function Home() {
   const queries = [
-    "How to convince parents to let me go on a trip with friends?",
-    "Malayalam love quotes for Instagram bio",
-    "Tomorrow collector declare holiday for rain?",
-    "How to talk to a girl in Kerala without being creepy?",
-    "Is it illegal to have a part-time job in Kerala as a student?",
-    "Easy ways to sneak out of the house",
-    "how to hide phone from parents while studying",
-    "How to make money without working?",
-    "How to make tea?",
-    "How to pass exams without studying",
-    "How to cover whole syllabus within 1 day?",
-    "how to convince parents to buy a gaming laptop for 'online classes' ",
-    "what to say when you get a low grade in exams",
-    "best ways to copy in exam without getting caught",
-    "how to pass a test you didn't study for",
-    "how to hide phone from parents while studying",
-    "ways to talk on the phone after 10 pm without getting caught",
-    "best excuses for being late to school in Malayalam",
-    "how to get out of a family function",
-    "how to block my dad on Facebook without him knowing",
-    "best VPN for phone in Kerala",
-    "best mandi spot near me",
-    "How to get a girlfriend?",
-    "How much would an iphone cost on emi?",
+    "How to make a perfect cup of chai?",
+    "How to wake up early in the morning?",
+    "Best way to ask parents for more pocket money?",
+    "Is it okay to eat Maggi for dinner?",
+    "How to focus on studying for more than 10 minutes?",
+    "What to say when my parents see my bad report card?",
+    "Is B-Tech the only good career option?",
+    "How to convince parents for a Goa trip with friends?",
+    "What's a good first bike to buy?",
+    "Should I buy an iPhone or a cheaper Android phone?",
+    "How to save money as a student in Kerala?",
+    "Government job or IT job in Bangalore?",
+    "How to look cool in college?",
+    "Best biryani spot near me?",
+    "Is it okay to wear shorts in my hometown?",
+    "How to talk to a girl I like?",
+    "My friend has a gaming laptop for 'online classes'. Is it a good idea?",
+    "How to stop using my phone so much?",
+    "Best excuse to avoid cleaning my room?",
+    "How to eat sadhya properly with hands?",
+    "Is it better to live in the Gulf or in Kerala?",
+    "What is the secret to becoming rich?",
+    "How to get out of attending a family function?",
+    "My mom says I'm lazy. Is it true?",
+    "Why is today's generation always tired?",
+
+    "How to eat a full 26-item sadhya without falling asleep immediately?",
+    "My pookkalam looks like a mess. Any last-minute tips to fix it?",
+    "Can I wear jeans for Thiruvonam or is a mundu compulsory?",
+    "What's the best answer when relatives ask 'What are your future plans?' during the sadhya?",
+    "Is it okay to ask for Onam Kaineettam using a QR code?",
+    "My cousin's Onam reel on Instagram got 1000 likes. Should I be worried?",
   ];
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,24 +59,35 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col dark:bg-neutral-900">
-      <div className="w-full p-2 text-sm font-medium text-center dark:bg-green-400  bg-green-200 text-green-900">
-        <a
-          className="text-blue-700"
-          href="https://www.reddit.com/r/Kerala/comments/1mve7xf/we_built_an_ammavan_search_engine/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
-        >
-          Reddit
-        </a>{" "}
-        sent huge traffic that pushed us past our AI limit — we’ve fixed it and
-        are so back, enjoy!
+      <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
+        <Link to="/kaineetam" className="chilanka">
+          ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
+          ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
+        </Link>
       </div>
+
+      <header className="w-full py-3 flex justify-end px-5 gap-x-5 dark:text-neutral-400">
+        <Link
+          to="/scan"
+          className="cursor-pointer cal-sans dark:hover:text-neutral-100"
+        >
+          Shaaji Scan
+        </Link>
+        <Link
+          to="/settings"
+          className="cursor-pointer dark:hover:text-neutral-100"
+        >
+          <Settings />
+        </Link>
+      </header>
 
       <div className="flex flex-col justify-center items-center grow gap-y-3 sm:gap-y-5 py-8 sm:py-0 px-4 sm:px-6 lg:px-8">
         {/* Logo and mascot section - always horizontal */}
         <div className="flex items-center gap-x-3 sm:gap-x-4">
           <Logo className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl" />
           <img
-            src="mascot.png"
-            className="w-12 sm:w-14 md:w-15"
+            src="maveli-mascot.png"
+            className="w-14 sm:w-16 md:w-18"
             alt="Shaaji mascot"
           />
         </div>
@@ -96,26 +116,6 @@ export default function Home() {
             onKeyDown={handleKeyDown}
           />
         </div>
-
-        <span className="text-center text-sm md:text-base text-yellow-600 dark:text-yellow-400">
-          Love what we built? Support us via{" "}
-          <a
-            href="upi://pay?pa=ridhaanasif@okicici&pn=Ridan%20Asif&cu=INR"
-            target="_blank"
-            className="underline font-bold"
-          >
-            UPI
-          </a>{" "}
-          or{" "}
-          <a
-            href="https://buymeacoffee.com/ridanasif"
-            target="_blank"
-            className="underline font-bold"
-          >
-            Buy Me a Coffee!
-          </a>
-        </span>
-
         {/* Buttons - always side by side */}
         <div className="flex gap-x-2">
           <Button

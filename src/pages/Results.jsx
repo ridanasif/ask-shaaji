@@ -1,124 +1,14 @@
-import { GoogleGenAI } from "@google/genai";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 import ShareButton from "../ui/ShareButton";
 import SkeletonLoader from "../ui/SkeletonLoader";
-import TemperControl from "../ui/TemperControl";
-import { generateAndPlayVoice } from "../utils/voiceUtils";
-import {
-  generateShaajiPrompt,
-  parseGeminiResponse,
-} from "../utils/promptUtils";
-import { TEMPER_CONFIG, useClientSide } from "../constants/app";
-
-let ai;
-if (useClientSide) {
-  ai = new GoogleGenAI({
-    apiKey: import.meta.env.VITE_GEMINI_API_KEY,
-  });
-}
-
-// Custom hook for typing animation
-const useTypingEffect = (text, speed = 50) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-
-  useEffect(() => {
-    if (!text) {
-      setDisplayedText("");
-      return;
-    }
-
-    setIsTyping(true);
-    setDisplayedText("");
-
-    let index = 0;
-    const timer = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText(text.slice(0, index + 1));
-        index++;
-      } else {
-        setIsTyping(false);
-        clearInterval(timer);
-      }
-    }, speed);
-
-    return () => clearInterval(timer);
-  }, [text, speed]);
-
-  return { displayedText, isTyping };
-};
-
-// Optimized Voice Button Component
-const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
-  const currentTemper = TEMPER_CONFIG[temperLevel];
-  const handleClick = () => {
-    if (isPlaying) {
-      onStop();
-    } else {
-      onPlay();
-    }
-  };
-
-  return (
-    <button
-      onClick={handleClick}
-      disabled={isLoading}
-      className={`p-2 rounded-full transition-all duration-300 hover:scale-110 ${
-        isLoading
-          ? "cursor-not-allowed opacity-50"
-          : "cursor-pointer hover:shadow-md"
-      } hover:bg-white hover:bg-opacity-30`}
-      title={
-        isLoading
-          ? "Loading..."
-          : isPlaying
-          ? "Stop audio"
-          : "Play Shaaji's opinion"
-      }
-    >
-      {isLoading ? (
-        <svg
-          className={`w-5 h-5 animate-spin ${currentTemper.textColor}`}
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-      ) : isPlaying ? (
-        <svg
-          className={`w-5 h-5 ${currentTemper.textColor}`}
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-        </svg>
-      ) : (
-        <svg
-          className={`w-5 h-5 ${currentTemper.textColor}`}
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-        </svg>
-      )}
-    </button>
-  );
-};
+import { TEMPER_CONFIG } from "../constants/app";
+import { useShaajiSearch } from "../hooks/useShaajiSearch";
+import { useTypingEffect } from "../hooks/useTypingEffect";
+import { useVoicePlayback } from "../hooks/useVoicePlayback";
+import VoiceButton from "../ui/VoiceButton";
 
 export default function Results() {
   const location = useLocation();
@@ -126,95 +16,19 @@ export default function Results() {
   const query = queryParams.get("query");
   const navigate = useNavigate();
 
+  // Search Related
   const [searchQuery, setSearchQuery] = useState("");
-  const [temperLevel, setTemperLevel] = useState(0);
-  const [searchData, setSearchData] = useState({
-    query: "",
-    uncle_opinion: "",
-    results: [],
-  });
-  const [loading, setLoading] = useState(false);
-  const [isPlayingVoice, setIsPlayingVoice] = useState(false);
-  const [isVoiceLoading, setIsVoiceLoading] = useState(false);
-  const [currentAudio, setCurrentAudio] = useState(null);
-
-  const currentTemper = TEMPER_CONFIG[temperLevel];
-  const { displayedText: typedOpinion, isTyping } = useTypingEffect(
-    searchData.uncle_opinion,
-    20
-  );
-
-  // Optimized voice play handler
-  const handlePlayVoice = async () => {
-    if (!searchData.uncle_opinion || isVoiceLoading) return;
-
-    setIsVoiceLoading(true);
-    try {
-      // Start audio generation immediately without additional checks
-      const audioInstance = await generateAndPlayVoice(
-        searchData.uncle_opinion,
-        temperLevel
-      );
-
-      if (audioInstance?.addEventListener) {
-        setCurrentAudio(audioInstance);
-        setIsPlayingVoice(true);
-
-        const handleAudioEnd = () => {
-          setIsPlayingVoice(false);
-          setCurrentAudio(null);
-        };
-
-        const handleAudioError = () => {
-          setIsPlayingVoice(false);
-          setCurrentAudio(null);
-        };
-
-        audioInstance.addEventListener("ended", handleAudioEnd, { once: true });
-        audioInstance.addEventListener("error", handleAudioError, {
-          once: true,
-        });
-      }
-    } catch (error) {
-      console.error("Audio error:", error);
-      setIsPlayingVoice(false);
-      setCurrentAudio(null);
-    } finally {
-      setIsVoiceLoading(false);
-    }
-  };
-
-  const handleStopVoice = () => {
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      setIsPlayingVoice(false);
-      setCurrentAudio(null);
-    }
-  };
-
-  // Cleanup audio on unmount or query change
-  useEffect(() => {
-    return () => {
-      if (currentAudio) {
-        currentAudio.pause();
-        setCurrentAudio(null);
-        setIsPlayingVoice(false);
-      }
-    };
-  }, [query]);
-
   useEffect(() => {
     if (query) {
       setSearchQuery(query);
     }
   }, [query]);
 
+  const { searchData, loading, temperLevel } = useShaajiSearch(query);
   function handleSearch(query) {
     if (!query.trim()) return;
     navigate(`/search?query=${encodeURIComponent(query.trim())}`);
   }
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.target.blur();
@@ -222,74 +36,36 @@ export default function Results() {
     }
   };
 
-  useEffect(() => {
-    if (!query.trim()) return;
+  // Voice Logic
+  const {
+    play,
+    stop,
+    isPlaying,
+    isLoading: isVoiceLoading,
+  } = useVoicePlayback({
+    opinion: searchData.uncle_opinion,
+    temperLevel: temperLevel,
+    isSearchLoading: loading,
+  });
 
-    async function fetchSearchData() {
-      setLoading(true);
-
-      // Stop any playing audio when new search starts
-      if (currentAudio) {
-        currentAudio.pause();
-        setCurrentAudio(null);
-        setIsPlayingVoice(false);
-      }
-
-      try {
-        let parsedData;
-
-        if (useClientSide) {
-          // Local development with client-side API
-          console.log("Using client-side API for development");
-
-          const res = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: generateShaajiPrompt(query, temperLevel),
-            config: {
-              thinkingConfig: {
-                thinkingBudget: 0,
-              },
-            },
-          });
-
-          parsedData = parseGeminiResponse(res.text);
-        } else {
-          // Production with server-side API
-          const response = await fetch("/api/search", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              query: query,
-              temperLevel: temperLevel,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to fetch search data");
-          }
-
-          parsedData = await response.json();
-        }
-
-        setSearchData(parsedData);
-      } catch (err) {
-        console.error("Search error:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchSearchData();
-  }, [query, temperLevel]);
+  const currentTemper = TEMPER_CONFIG[temperLevel];
+  const { displayedText: typedOpinion, isTyping } = useTypingEffect(
+    searchData.uncle_opinion,
+    20
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
+      <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
+        <Link to="/kaineetam" className="chilanka">
+          ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
+          ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
+        </Link>
+      </div>
       <header className="w-full py-3 sm:py-5 px-4 sm:px-6 lg:px-10 border-b-[1px] border-gray-300 flex flex-col sm:flex-row items-center gap-y-3 sm:gap-x-5 sm:gap-y-0 sticky top-0 bg-white/70 backdrop-blur-md z-10 dark:bg-neutral-900 dark:border-neutral-700">
-        <a href="/" className="shrink-0">
+        <Link to="/" className="shrink-0">
           <Logo className="text-3xl" />
-        </a>
+        </Link>
 
         <div className="ring-1 w-full sm:w-2xl py-2 sm:py-3 px-4 sm:px-6 rounded-full ring-gray-300 flex items-center gap-x-3 dark:bg-neutral-800 dark:ring-neutral-700">
           <svg
@@ -313,16 +89,16 @@ export default function Results() {
         </div>
       </header>
 
-      <main className="grow flex flex-col lg:flex-row bg-white dark:bg-neutral-900">
-        <div className="w-full lg:w-80 xl:w-96 order-1 lg:order-2 lg:py-6 px-4 sm:px-6 lg:px-10 pt-4 pb-4 lg:pb-0">
-          <TemperControl
-            temperLevel={temperLevel}
-            setTemperLevel={setTemperLevel}
-          />
-        </div>
-
-        <div className="flex-1 order-2 lg:order-1 px-4 sm:px-6 lg:px-10 py-4 sm:py-5">
+      <main className="grow flex flex-col bg-white dark:bg-neutral-900">
+        <div className="flex-1 px-4 sm:px-6 lg:px-10 py-4 sm:py-5">
           <div className="w-full lg:max-w-4xl space-y-4 sm:space-y-5">
+            <span className="block mb-3 dark:text-neutral-500 text-sm">
+              Adjust Shaaji's personality from{" "}
+              <Link to={"/settings"}>
+                <b>Settings</b>
+              </Link>
+              .
+            </span>
             {loading ? (
               <SkeletonLoader temperLevel={temperLevel} />
             ) : (
@@ -354,9 +130,9 @@ export default function Results() {
                           isVisible={true}
                         />
                         <VoiceButton
-                          onPlay={handlePlayVoice}
-                          onStop={handleStopVoice}
-                          isPlaying={isPlayingVoice}
+                          onPlay={play}
+                          onStop={stop}
+                          isPlaying={isPlaying}
                           isLoading={isVoiceLoading}
                           temperLevel={temperLevel}
                         />

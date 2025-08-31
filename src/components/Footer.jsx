@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
   return (
     <>
@@ -8,14 +10,15 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row px-4 sm:px-6 lg:px-10 text-sm gap-y-3 sm:gap-y-0 sm:justify-between">
             <ul className="flex flex-wrap gap-x-3 sm:gap-x-5 gap-y-2">
               <li className="hover:underline cursor-pointer">
-                <a href="/founders">Meet the Creators</a>
+                <Link to="/founders">Meet the Creators</Link>
               </li>
-
             </ul>
             <ul className="flex flex-wrap gap-x-3 sm:gap-x-5 gap-y-2">
               <li className="hover:underline cursor-pointer">Privacy</li>
               <li className="hover:underline cursor-pointer">Terms</li>
-              <li className="hover:underline cursor-pointer">Settings</li>
+              <li className="hover:underline cursor-pointer">
+                <Link to="/settings">Settings</Link>
+              </li>
             </ul>
           </div>
         </div>

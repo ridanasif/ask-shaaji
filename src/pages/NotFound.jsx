@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const NotFound = () => {
   return (
     <>
@@ -10,12 +12,12 @@ const NotFound = () => {
           മോനേ, നീയിവിടെ നോക്കിയത് കിട്ടില്ല! കമ്പ്യൂട്ടറിലിങ്ങനെ
           കുത്തിയിരുന്നാൽ പലതും മിസ്സാകും. വല്ല പണിക്കും പോയി ജീവിക്ക്, പോ!
           <br />
-          <a
+          <Link
             className="text-sm font-medium text-blue-400 cursor-pointer"
-            href="/"
+            to="/"
           >
             Return to main page
-          </a>
+          </Link>
         </h1>
       </div>
     </>

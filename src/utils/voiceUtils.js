@@ -4,107 +4,68 @@ const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
 });
 
-// Convert base64 audio to playable blob
-function convertToWav(rawData, mimeType) {
-  const options = parseMimeType(mimeType);
-  const wavHeader = createWavHeader(rawData.length, options);
-  const buffer = Uint8Array.from(atob(rawData), (c) => c.charCodeAt(0));
-
-  // Combine header and audio data
-  const combinedArray = new Uint8Array(wavHeader.length + buffer.length);
-  combinedArray.set(wavHeader, 0);
-  combinedArray.set(buffer, wavHeader.length);
-
-  return combinedArray;
-}
-
-function parseMimeType(mimeType) {
-  const [fileType, ...params] = mimeType.split(";").map((s) => s.trim());
-  const [_, format] = fileType.split("/");
-
-  const options = {
-    numChannels: 1,
-    sampleRate: 24000, // Default sample rate
-    bitsPerSample: 16, // Default bits per sample
-  };
-
-  if (format && format.startsWith("L")) {
-    const bits = parseInt(format.slice(1), 10);
-    if (!isNaN(bits)) {
-      options.bitsPerSample = bits;
-    }
-  }
-
-  for (const param of params) {
-    const [key, value] = param.split("=").map((s) => s.trim());
-    if (key === "rate") {
-      options.sampleRate = parseInt(value, 10);
-    }
-  }
-
-  return options;
-}
-
+// This function creates the 44-byte WAV header.
+// It's needed because the API sends raw audio data.
 function createWavHeader(dataLength, options) {
-  const { numChannels, sampleRate, bitsPerSample } = options;
-
+  const { numChannels = 1, sampleRate = 24000, bitsPerSample = 16 } = options;
   const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
   const blockAlign = (numChannels * bitsPerSample) / 8;
   const buffer = new ArrayBuffer(44);
   const view = new DataView(buffer);
 
-  // WAV header
-  const encoder = new TextEncoder();
-  const riff = encoder.encode("RIFF");
-  const wave = encoder.encode("WAVE");
-  const fmt = encoder.encode("fmt ");
-  const data = encoder.encode("data");
-
-  view.setUint8(0, riff[0]);
-  view.setUint8(1, riff[1]);
-  view.setUint8(2, riff[2]);
-  view.setUint8(3, riff[3]);
+  // RIFF identifier
+  view.setUint8(0, 82);
+  view.setUint8(1, 73);
+  view.setUint8(2, 70);
+  view.setUint8(3, 70); // "RIFF"
+  // File size
   view.setUint32(4, 36 + dataLength, true);
-  view.setUint8(8, wave[0]);
-  view.setUint8(9, wave[1]);
-  view.setUint8(10, wave[2]);
-  view.setUint8(11, wave[3]);
-  view.setUint8(12, fmt[0]);
-  view.setUint8(13, fmt[1]);
-  view.setUint8(14, fmt[2]);
-  view.setUint8(15, fmt[3]);
+  // WAVE identifier
+  view.setUint8(8, 87);
+  view.setUint8(9, 65);
+  view.setUint8(10, 86);
+  view.setUint8(11, 69); // "WAVE"
+  // FMT chunk identifier
+  view.setUint8(12, 102);
+  view.setUint8(13, 109);
+  view.setUint8(14, 116);
+  view.setUint8(15, 32); // "fmt "
+  // FMT chunk length
   view.setUint32(16, 16, true);
+  // Audio format (1 for PCM)
   view.setUint16(20, 1, true);
+  // Number of channels
   view.setUint16(22, numChannels, true);
+  // Sample rate
   view.setUint32(24, sampleRate, true);
+  // Byte rate
   view.setUint32(28, byteRate, true);
+  // Block align
   view.setUint16(32, blockAlign, true);
+  // Bits per sample
   view.setUint16(34, bitsPerSample, true);
-  view.setUint8(36, data[0]);
-  view.setUint8(37, data[1]);
-  view.setUint8(38, data[2]);
-  view.setUint8(39, data[3]);
+  // DATA chunk identifier
+  view.setUint8(36, 100);
+  view.setUint8(37, 97);
+  view.setUint8(38, 116);
+  view.setUint8(39, 97); // "data"
+  // DATA chunk size
   view.setUint32(40, dataLength, true);
 
   return new Uint8Array(buffer);
 }
 
-// Function to preload voice (generate audio but don't play)
-export async function preloadVoice(text, temperLevel = 0) {
+// This is our main function that will be exported and used by the hook.
+export async function generateAndPlayVoice(text, temperLevel = 0) {
   try {
-    // Map temper level to voice characteristics
+    // 1. Call the Gemini API to get the raw audio data.
     const config = {
       temperature: 1,
       responseModalities: ["audio"],
       speechConfig: {
-        voiceConfig: {
-          prebuiltVoiceConfig: {
-            voiceName: "Orus",
-          },
-        },
+        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Orus" } },
       },
     };
-
     switch (temperLevel) {
       case 1:
         text = `Say neutrally: ${text}`;
@@ -116,91 +77,46 @@ export async function preloadVoice(text, temperLevel = 0) {
         text = `Say happily: ${text}`;
         break;
     }
-
     const model = "gemini-2.5-flash-preview-tts";
-    const contents = [
-      {
-        role: "user",
-        parts: [
-          {
-            text: text,
-          },
-        ],
-      },
-    ];
+    const contents = [{ role: "user", parts: [{ text }] }];
 
-    const response = await ai.models.generateContentStream({
+    // Use the non-streaming version for simplicity, as TTS audio is usually small.
+    const response = await ai.models.generateContent({
       model,
       config,
       contents,
     });
+    const inlineData =
+      response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
 
-    // Collect all audio chunks
-    const audioChunks = [];
-    for await (const chunk of response) {
-      if (chunk.candidates?.[0]?.content?.parts?.[0]?.inlineData) {
-        const inlineData = chunk.candidates[0].content.parts[0].inlineData;
-        if (inlineData.mimeType?.includes("audio")) {
-          audioChunks.push({
-            data: inlineData.data,
-            mimeType: inlineData.mimeType,
-          });
-        }
-      }
-    }
+    if (inlineData && inlineData.data) {
+      // 2. Decode the base64 raw PCM data into a binary buffer.
+      const pcmData = Uint8Array.from(atob(inlineData.data), (c) =>
+        c.charCodeAt(0)
+      );
 
-    // Process and return audio object (but don't play yet)
-    if (audioChunks.length > 0) {
-      const audioData = audioChunks[0];
-      const audioBuffer = convertToWav(audioData.data, audioData.mimeType);
+      // 3. Create the WAV header for this PCM data.
+      // The API returns 24000Hz, 16-bit audio.
+      const header = createWavHeader(pcmData.length, { sampleRate: 24000 });
 
-      // Create blob and audio object
-      const blob = new Blob([audioBuffer], { type: "audio/wav" });
+      // 4. Combine the header and the PCM data to create a full WAV file in memory.
+      const wavData = new Uint8Array(header.length + pcmData.length);
+      wavData.set(header, 0);
+      wavData.set(pcmData, header.length);
+
+      // 5. Create a Blob and an <audio> element from our in-memory WAV file
+      const blob = new Blob([wavData], { type: "audio/wav" });
       const audioUrl = URL.createObjectURL(blob);
       const audio = new Audio(audioUrl);
 
-      // Set up cleanup
-      const cleanup = () => URL.revokeObjectURL(audioUrl);
-      audio.addEventListener("ended", cleanup, { once: true });
-      audio.addEventListener("error", cleanup, { once: true });
-
-      // Preload the audio
-      audio.load();
-
-      // Return the audio object ready to play
-      return audio;
+      // 6. Play the audio and return the element so we can control it (pause, etc.)
+      await audio.play();
+      return { audio, audioUrl };
     } else {
-      throw new Error("No audio data received");
+      throw new Error("No audio data received from API");
     }
   } catch (error) {
-    console.error("Error preloading voice:", error);
-    return null;
-  }
-}
-
-// Function to play preloaded voice
-export async function playPreloadedVoice(audioInstance) {
-  if (!audioInstance) return null;
-
-  try {
-    await audioInstance.play();
-    return audioInstance;
-  } catch (error) {
-    console.error("Error playing preloaded voice:", error);
-    return null;
-  }
-}
-
-// Original function for backward compatibility
-export async function generateAndPlayVoice(text, temperLevel = 0) {
-  const audio = await preloadVoice(text, temperLevel);
-  if (!audio) return null;
-
-  try {
-    await audio.play();
-    return audio;
-  } catch (error) {
-    console.error("Error playing voice:", error);
+    console.error("Error in generateAndPlayVoice:", error);
     return null;
   }
 }

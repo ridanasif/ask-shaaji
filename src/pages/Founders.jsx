@@ -1,4 +1,5 @@
 import { ArrowLeft, InstagramIcon, LinkedinIcon, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 const Founders = () => {
   const Section = ({ img, name, location, linkedin, instagram }) => {
     return (
@@ -36,17 +37,17 @@ const Founders = () => {
 
   return (
     <div className="flex flex-col w-full h-screen bg-white dark:bg-neutral-900">
-      <header className="w-full py-2 px-8 flex justify-between items-center text-lg border-b-[1px] border-gray-200 dark:border-neutral-700">
+      <header className="w-full py-2 px-8 flex justify-between items-center text-lg border-b-[1px] border-gray-300 dark:border-neutral-700">
         <div className="flex-1">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="dark:text-neutral-100 flex gap-x-2 text-sm items-center"
           >
             <ArrowLeft />{" "}
             <span className="hidden md:inline font-medium text-blue-500 dark:text-neutral-100">
               Back to main page
             </span>
-          </a>
+          </Link>
         </div>
         <div className="flex items-center gap-x-1 md:gap-x-3 text-sm md:text-lg font-bold dark:text-neutral-100">
           <img className="w-8 md:w-12" src="mascot-head.png" />

@@ -1,8 +1,8 @@
 {
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}
+{
   "rewrites": [
-    {
-      "source": "/((?!api/|_next/|favicon.ico|.*\\.).*)",
-      "destination": "/index.html"
-    }
+    { "source": "/(.*)", "destination": "/" }
   ]
 }

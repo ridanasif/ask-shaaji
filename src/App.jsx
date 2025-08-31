@@ -6,7 +6,10 @@ import Home from "./pages/Home";
 import Results from "./pages/Results";
 import NotFound from "./pages/NotFound";
 import Founders from "./pages/Founders";
-
+import ShaajiScan from "./pages/ShaajiScan";
+import Kaineetam from "./pages/Kaineetam";
+import Settings from "./pages/Settings";
+import Supporters from "./pages/Supporters";
 function App() {
   return (
     <>
@@ -14,7 +17,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Results />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/founders" element={<Founders />} />
+          <Route path="/scan" element={<ShaajiScan />} />
+          <Route path="/kaineetam" element={<Kaineetam />} />
+          <Route path="/supporters" element={<Supporters />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
@@ -23,5 +30,4 @@ function App() {
     </>
   );
 }
-
 export default App;
