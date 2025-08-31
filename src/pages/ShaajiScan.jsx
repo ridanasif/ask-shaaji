@@ -260,7 +260,7 @@ export default function ShaajiScan() {
       }));
 
       try {
-        if (useClientSide) {
+        if (!useClientSide) {
           const response = await fetch("/api/scan", {
             method: "POST",
             headers: {
