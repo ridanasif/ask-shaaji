@@ -4,8 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 import { Settings } from "lucide-react";
+import { useLanguageStore } from "../store/languageStore";
 
 export default function Home() {
+  const { language, setLanguage } = useLanguageStore();
   const queries = [
     "How to make a perfect cup of chai?",
     "How to wake up early in the morning?",
@@ -59,12 +61,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col dark:bg-neutral-900">
-      <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
-        <Link to="/kaineetam" className="chilanka">
-          ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
-          ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
-        </Link>
-      </div>
+      {language === "ml" && (
+        <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
+          <Link to="/kaineetam" className="chilanka">
+            ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
+            ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
+          </Link>
+        </div>
+      )}
 
       <header className="w-full py-3 flex justify-end px-5 gap-x-5 dark:text-neutral-400">
         <Link
@@ -86,7 +90,11 @@ export default function Home() {
         <div className="flex items-center gap-x-3 sm:gap-x-4">
           <Logo className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl" />
           <img
-            src="maveli-mascot.png"
+            src={
+              language === "ml"
+                ? "maveli-mascot.png"
+                : "shaaji-tamil-mascot.png"
+            }
             className="w-14 sm:w-16 md:w-18"
             alt="Shaaji mascot"
           />
@@ -128,6 +136,28 @@ export default function Home() {
               handleSearch(queries[Math.floor(Math.random() * queries.length)])
             }
           />
+        </div>
+
+        <div className="mt-5">
+          <span className="dark:text-neutral-100 text-xs inline-flex items-center gap-x-3">
+            Shaaji offered in:{" "}
+            <span
+              onClick={() => setLanguage("ml")}
+              className={`text-sm text-blue-500 cursor-pointer hover:underline ${
+                language === "ml" && "underline"
+              }`}
+            >
+              മലയാളം
+            </span>{" "}
+            <span
+              onClick={() => setLanguage("ta")}
+              className={`text-sm text-blue-500 cursor-pointer hover:underline ${
+                language === "ta" && "underline"
+              }`}
+            >
+              தமிழ்
+            </span>
+          </span>
         </div>
       </div>
       <Footer />

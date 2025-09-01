@@ -9,12 +9,14 @@ import { useShaajiSearch } from "../hooks/useShaajiSearch";
 import { useTypingEffect } from "../hooks/useTypingEffect";
 import { useVoicePlayback } from "../hooks/useVoicePlayback";
 import VoiceButton from "../ui/VoiceButton";
+import { useLanguageStore } from "../store/languageStore";
 
 export default function Results() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("query");
   const navigate = useNavigate();
+  const { language } = useLanguageStore();
 
   // Search Related
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,12 +58,14 @@ export default function Results() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
-        <Link to="/kaineetam" className="chilanka">
-          ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
-          ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
-        </Link>
-      </div>
+      {language === "ml" && (
+        <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
+          <Link to="/kaineetam" className="chilanka">
+            ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
+            ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
+          </Link>
+        </div>
+      )}
       <header className="w-full py-3 sm:py-5 px-4 sm:px-6 lg:px-10 border-b-[1px] border-gray-300 flex flex-col sm:flex-row items-center gap-y-3 sm:gap-x-5 sm:gap-y-0 sticky top-0 bg-white/70 backdrop-blur-md z-10 dark:bg-neutral-900 dark:border-neutral-700">
         <Link to="/" className="shrink-0">
           <Logo className="text-3xl" />

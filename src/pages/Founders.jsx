@@ -1,6 +1,8 @@
 import { ArrowLeft, InstagramIcon, LinkedinIcon, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguageStore } from "../store/languageStore";
 const Founders = () => {
+  const { language } = useLanguageStore();
   const Section = ({ img, name, location, linkedin, instagram }) => {
     return (
       <div className="place-content-center place-items-center space-y-3 md:gap-y-6 text-center p-5">
@@ -50,8 +52,13 @@ const Founders = () => {
           </Link>
         </div>
         <div className="flex items-center gap-x-1 md:gap-x-3 text-sm md:text-lg font-bold dark:text-neutral-100">
-          <img className="w-8 md:w-12" src="mascot-head.png" />
-          ഇതിൻ്റെ പിന്നിലുള്ള വിരുതന്മാർ.
+          <img
+            className="w-8 md:w-12"
+            src={language === "ta" ? "tamil-head.png" : "mascot-head.png"}
+          />
+          <span>
+            Creators of Shaaji
+          </span>
         </div>
         <div className="grow"></div>
       </header>

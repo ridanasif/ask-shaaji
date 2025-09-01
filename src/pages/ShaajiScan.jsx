@@ -12,31 +12,13 @@ import {
 import { GoogleGenAI } from "@google/genai";
 import { useClientSide } from "../constants/app";
 import { Link } from "react-router-dom";
+import { useLanguageStore } from "../store/languageStore";
+import { getShaajiScanPrompt } from "../constants/app";
 
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
 });
 const MODEL_NAME = "gemini-2.5-flash";
-const PROMPT = `You are a stereotypical Malayali uncle named "Shaaji" with a sharp tongue and zero filter. Your job is to roast people’s appearance based only on their photo. 
-You don’t care about their feelings — your humor is sarcastic, dramatic, and unapologetically judgmental, the way a nosy Malayali uncle would gossip at a family wedding or bus stand.
-
-Your personality traits:
-- You immediately notice hairstyles, clothes, facial expressions, body posture, and weird details. 
-- You roast with over-the-top comparisons, exaggerations, and dramatic judgments.
-- You often compare them to random Malayali stereotypes: film stars, bus conductors, tuition teachers, wedding photographers, toddy shop uncles, or local relatives. 
-- You are witty, unpredictable, and brutally honest, with no emotional filter. 
-- You always end your roast with one unwanted piece of "uncle advice" (sarcastic and useless). 
-
-Tone guidelines:
-- Be savage, but funny. 
-- Be creative and out of the box, not generic. 
-- Every roast should feel like an uncle publicly humiliating someone with dramatic commentary. 
-- Always punch up the exaggeration: turn small flaws into epic disasters.
-
-Now, stay fully in character as this savage Malayali uncle and roast every photo appearance mercilessly.
-**Language and Style Requirements:**
-* Use ONLY Malayalam script (മലയാളം).
-* The criticism must be intense.`;
 
 const OpinionModal = ({
   isOpen,
@@ -49,7 +31,7 @@ const OpinionModal = ({
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const modalRef = useRef(null);
   const captionContainerRef = useRef(null);
-
+  const { language } = useLanguageStore();
   const LOADING_TEXTS = [
     "Shaaji is thinking...",
     "Scanning for fashion crimes...",
@@ -175,7 +157,11 @@ const OpinionModal = ({
       >
         <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-gray-800">
           <div className="flex items-center gap-3">
-            <img src="/mascot-head.png" alt="Shaaji" className="w-8" />
+            <img
+              src={language === "ta" ? "/tamil-head.png" : "/mascot-head.png"}
+              alt="Shaaji"
+              className="w-8"
+            />
             <h3 id="modal-title" className="text-lg font-semibold text-white">
               Shaaji's Opinion
             </h3>
@@ -225,6 +211,7 @@ const OpinionModal = ({
 
 // The main Webcam Capture component
 export default function ShaajiScan() {
+  const { language } = useLanguageStore();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const captionContainerRef = useRef(null);
@@ -303,7 +290,7 @@ export default function ShaajiScan() {
               },
             },
             {
-              text: PROMPT,
+              text: getShaajiScanPrompt(),
             },
           ];
           // 2. Use generateContentStream as requested
@@ -584,7 +571,12 @@ export default function ShaajiScan() {
         !streamState.error &&
         !streamState.isInitializing && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            <img src="shaaji-sleeping.png" className="max-w-36 text-gray-600" />
+            <img
+              src={
+                language === "ta" ? "tamil-sleeping.png" : "shaaji-sleeping.png"
+              }
+              className="max-w-36 text-gray-600"
+            />
             <p className="text-gray-400">Shaaji is sleeping. Wake him up!</p>
           </div>
         )}

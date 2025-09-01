@@ -1,5 +1,11 @@
-export default function Logo({ className = "", useEditions = true, enableDarkMode = true }) {
+import { useLanguageStore } from "../store/languageStore";
+export default function Logo({
+  className = "",
+  useEditions = true,
+  enableDarkMode = true,
+}) {
   var h1Class = "logo " + className;
+  const { language } = useLanguageStore();
   return (
     <div className="flex flex-col items-center">
       <h1 className={h1Class}>
@@ -26,13 +32,11 @@ export default function Logo({ className = "", useEditions = true, enableDarkMod
         >
           j
         </span>
-        <span
-          className={`text-red-500 ${enableDarkMode && "dark:text-white"}`}
-        >
+        <span className={`text-red-500 ${enableDarkMode && "dark:text-white"}`}>
           i
         </span>
       </h1>
-      {useEditions && (
+      {useEditions && language === "ml" && (
         <span className="text-yellow-500 text-sm">ONAM EDITION</span>
       )}
     </div>
