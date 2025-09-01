@@ -4,7 +4,7 @@ import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 import ShareButton from "../ui/ShareButton";
 import SkeletonLoader from "../ui/SkeletonLoader";
-import { TEMPER_CONFIG } from "../constants/app";
+import { getTemperConfig } from "../constants/app";
 import { useShaajiSearch } from "../hooks/useShaajiSearch";
 import { useTypingEffect } from "../hooks/useTypingEffect";
 import { useVoicePlayback } from "../hooks/useVoicePlayback";
@@ -50,7 +50,7 @@ export default function Results() {
     isSearchLoading: loading,
   });
 
-  const currentTemper = TEMPER_CONFIG[temperLevel];
+  const currentTemper = getTemperConfig()[temperLevel];
   const { displayedText: typedOpinion, isTyping } = useTypingEffect(
     searchData.uncle_opinion,
     20

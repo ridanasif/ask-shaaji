@@ -1,8 +1,8 @@
-import { TEMPER_CONFIG } from "../constants/app";
+import { getTemperConfig } from "../constants/app";
 import { useState, useEffect } from "react";
 const ThinkingAnimation = ({ temperLevel }) => {
   const [dots, setDots] = useState("");
-  const currentTemper = TEMPER_CONFIG[temperLevel];
+  const currentTemper = getTemperConfig()[temperLevel];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,7 +26,7 @@ const ThinkingAnimation = ({ temperLevel }) => {
   );
 };
 const SkeletonLoader = ({ temperLevel }) => {
-  const currentTemper = TEMPER_CONFIG[temperLevel];
+  const currentTemper = getTemperConfig()[temperLevel];
 
   return (
     <div className="space-y-4 sm:space-y-5 grow animate-pulse">

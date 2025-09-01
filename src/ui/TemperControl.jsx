@@ -1,5 +1,6 @@
-import { TEMPER_CONFIG } from "../constants/app";
+import { getTemperConfig } from "../constants/app";
 const TemperControl = ({ temperLevel, setTemperLevel }) => {
+  const TEMPER_CONFIG = getTemperConfig();
   const getCurrentThumbColor = () => {
     return TEMPER_CONFIG[temperLevel].gradientColor;
   };

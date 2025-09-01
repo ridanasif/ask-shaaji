@@ -1,4 +1,4 @@
-import { useClientSide, TEMPER_CONFIG } from "../constants/app";
+import { useClientSide, getTemperConfig } from "../constants/app";
 import { useState } from "react";
 import { useAlert } from "../context/AlertContext";
 
@@ -262,7 +262,7 @@ function generateShareImage(query, opinion, temperLevel) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    const currentTemper = TEMPER_CONFIG[temperLevel || 0];
+    const currentTemper = getTemperConfig()[temperLevel || 0];
 
     const mascotImage = new Image();
     mascotImage.crossOrigin = "anonymous";
@@ -446,7 +446,7 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
   const { showAlert } = useAlert();
 
   const [isSharing, setIsSharing] = useState(false);
-  const currentTemper = TEMPER_CONFIG[temperLevel];
+  const currentTemper = getTemperConfig()[temperLevel];
 
   const handleShare = async () => {
     if (!query || !opinion || isSharing) return;

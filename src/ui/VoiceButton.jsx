@@ -1,7 +1,7 @@
-import { TEMPER_CONFIG } from "../constants/app";
+import { getTemperConfig } from "../constants/app";
 // Optimized Voice Button Component
 const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
-  const currentTemper = TEMPER_CONFIG[temperLevel];
+  const currentTemper = getTemperConfig()[temperLevel];
   const handleClick = () => {
     if (isPlaying) {
       onStop();
