@@ -13,7 +13,7 @@ import { GoogleGenAI } from "@google/genai";
 import { useClientSide } from "../constants/app";
 import { Link } from "react-router-dom";
 import { useLanguageStore } from "../store/languageStore";
-import { getShaajiScanPrompt } from "../constants/app";
+import { getShaajiScanPrompt } from "../utils/promptUtils";
 
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
@@ -257,6 +257,7 @@ export default function ShaajiScan() {
             },
             body: JSON.stringify({
               base64Clean: base64Clean,
+              language: language,
             }),
           });
 
@@ -290,7 +291,7 @@ export default function ShaajiScan() {
               },
             },
             {
-              text: getShaajiScanPrompt(),
+              text: getShaajiScanPrompt(language || "ml"),
             },
           ];
           // 2. Use generateContentStream as requested

@@ -33,7 +33,7 @@ function isRateLimitError(error) {
   );
 }
 
-async function attemptWithFallback(query, temperLevel) {
+async function attemptWithFallback(query, temperLevel, language) {
   for (let i = 0; i < API_KEYS.length; i++) {
     const apiKey = API_KEYS[i];
 
@@ -44,7 +44,7 @@ async function attemptWithFallback(query, temperLevel) {
 
       const res_ai = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: generateShaajiPrompt(query, temperLevel),
+        contents: generateShaajiPrompt(query, temperLevel, language),
         config: {
           thinkingConfig: {
             thinkingBudget: 0,
@@ -76,7 +76,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { query, temperLevel } = req.body;
+  const { query, temperLevel, language } = req.body;
 
   if (!query.trim()) {
     return res.status(400).json({ error: "Query is required" });
@@ -87,7 +87,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const parsedData = await attemptWithFallback(query, temperLevel);
+    const parsedData = await attemptWithFallback(query, temperLevel, language);
     res.status(200).json(parsedData);
   } catch (error) {
     if (isRateLimitError(error)) {

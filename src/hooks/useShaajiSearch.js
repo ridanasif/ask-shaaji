@@ -7,6 +7,7 @@ import {
 import { getTemperLevel } from "../utils/temperUtils";
 import { useClientSide, TEMPER_STORAGE_KEY } from "../constants/app";
 import { useAlert } from "../context/AlertContext";
+import { useLanguageStore } from "../store/languageStore";
 
 let ai;
 if (useClientSide) {
@@ -16,6 +17,7 @@ if (useClientSide) {
 }
 
 export function useShaajiSearch(query) {
+  const { language } = useLanguageStore();
   const { showAlert } = useAlert();
   const [searchData, setSearchData] = useState({
     query: "",
@@ -53,7 +55,11 @@ export function useShaajiSearch(query) {
         if (useClientSide) {
           const res = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: generateShaajiPrompt(query, temperForThisSearch),
+            contents: generateShaajiPrompt(
+              query,
+              temperForThisSearch,
+              language
+            ),
             config: {
               thinkingConfig: {
                 thinkingBudget: 0,
@@ -72,6 +78,7 @@ export function useShaajiSearch(query) {
             body: JSON.stringify({
               query: query,
               temperLevel: temperForThisSearch,
+              language: language,
             }),
           });
 

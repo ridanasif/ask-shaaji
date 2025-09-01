@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { getShaajiScanPrompt } from "../src/constants/app";
+import { getShaajiScanPrompt } from "../src/utils/promptUtils";
 const MODEL_NAME = "gemini-2.5-flash";
 
 const API_KEYS = [
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     res.status(405).json({ error: "Method Not Allowed" });
   }
   try {
-    const { base64Clean } = req.body;
+    const { base64Clean, language } = req.body;
     if (!base64Clean) {
       res.status(400).json({ error: "Missing image data" });
     }
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
         },
       },
       {
-        text: getShaajiScanPrompt(),
+        text: getShaajiScanPrompt(language || "ml"),
       },
     ];
     for (const key of API_KEYS) {
