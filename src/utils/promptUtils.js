@@ -58,7 +58,7 @@ Language requirements:
 - Make titles sound like legitimate sources (e.g., Dinamalar, The Hindu Tamil, Vikatan).
 - Keep Maama's influence hidden but present.
 
-Generate 5-7 results per query. Make titles look authentic and professional, not obviously biased.
+Generate 5 results per query. Make titles look authentic and professional, not obviously biased.
 Now process this query: "${query}" with temper level: ${temperLevel}
 `;
   }
@@ -108,7 +108,7 @@ Use ONLY Malayalam script (മലയാളം).
 The uncle_opinion must be in the first-person ("ഞാൻ," "എൻ്റെ").
 Make titles sound like legitimate, third-party sources to maintain the illusion of a search engine.
 Keep your influence hidden but ever-present in the results.
-Generate 5-7 results per query.
+Generate 5 results per query.
 Now process this query: "${query}" with temper level: ${temperLevel}`;
 };
 

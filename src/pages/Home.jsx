@@ -101,19 +101,31 @@ export default function Home() {
         </div>
       )}
 
-      <header className="w-full py-3 flex justify-end px-5 gap-x-5 dark:text-neutral-400">
-        <Link
-          to="/scan"
-          className="cursor-pointer cal-sans dark:hover:text-neutral-100"
-        >
-          Shaaji Scan
-        </Link>
-        <Link
-          to="/settings"
-          className="cursor-pointer dark:hover:text-neutral-100"
-        >
-          <Settings />
-        </Link>
+      <header className="w-full py-3 flex justify-end px-5 gap-x-4 md:gap-x-6 dark:text-neutral-400">
+        <div className="flex gap-x-4 md:gap-x-6">
+          {language === "ml" && (
+            <Link
+              to="/comics"
+              className="cursor-pointer bangers dark:hover:text-neutral-100"
+            >
+              Life of shaaji
+            </Link>
+          )}
+          <Link
+            to="/scan"
+            className="cursor-pointer cal-sans dark:hover:text-neutral-100"
+          >
+            Shaaji Scan
+          </Link>
+        </div>
+        <div>
+          <Link
+            to="/settings"
+            className="cursor-pointer dark:hover:text-neutral-100"
+          >
+            <Settings />
+          </Link>
+        </div>
       </header>
 
       <div className="flex flex-col justify-center items-center grow gap-y-3 sm:gap-y-5 py-8 sm:py-0 px-4 sm:px-6 lg:px-8">

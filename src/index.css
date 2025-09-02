@@ -26,8 +26,15 @@ a {
 }
 
 .chilanka {
+  @apply tracking-normal;
   font-family: "Chilanka";
 }
+
+.bangers {
+  @apply tracking-normal;
+  font-family: "Bangers", sans-serif;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
