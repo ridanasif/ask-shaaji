@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { languages } from "../constants/app";
 
 // Helper function remains the same
 function getLanguageFromURL() {
@@ -8,7 +9,7 @@ function getLanguageFromURL() {
   }
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang");
-  if (lang === "ml" || lang === "ta") {
+  if (languages.some((language) => language.code === lang)) {
     return lang;
   }
   return null;

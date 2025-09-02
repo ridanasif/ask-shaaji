@@ -5,9 +5,12 @@ import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 import { Settings } from "lucide-react";
 import { useLanguageStore } from "../store/languageStore";
+import { languages } from "../constants/app";
+import SupportModal from "../ui/SupportModal";
 
 export default function Home() {
   const { language, setLanguage } = useLanguageStore();
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   let queries;
   if (language === "ml") {
     queries = [
@@ -72,6 +75,34 @@ export default function Home() {
       "How to handle relatives asking 'When are you getting married?'",
       "Is it okay to wear ripped jeans to a temple festival?",
     ];
+  } else if (language === "hi") {
+    queries = [
+      "How to make perfect kadak chai for my father?",
+      "How to wake up early for a morning walk in the park?",
+      "Best way to ask parents for money for a new Bullet bike?",
+      "Is it okay to eat pizza for dinner?",
+      "How to focus on IAS exams when my friends are partying?",
+      "What to say when my parents find my dating app profile?",
+      "Is an engineering degree the only way to get respect in society?",
+      "How to convince parents for a Manali trip with friends?",
+      "Should I buy an iPhone or is a cheaper phone more sensible?",
+      "How to save money as a student in Delhi?",
+      "Government job or a private startup job?",
+      "How to look smart in a kurta?",
+      "Best biryani spot in Lucknow?",
+      "Is it okay to wear shorts in my hometown in UP?",
+      "How to talk to a girl in my coaching class?",
+      "My friend has a gaming PC for 'online classes'. Is it a good idea?",
+      "How to stop using my phone so much and be more productive?",
+      "Best excuse to avoid cleaning my room?",
+      "Is it better to live in a metro city or go back to my hometown?",
+      "What is the secret to getting a good arranged marriage proposal?",
+      "How to deal with a nosy 'padosi' (neighbour) aunty?",
+      "My mom says I'm lazy. Is it true?",
+      "Why is today's generation always talking about 'mental health'?",
+      "What is the best comeback when compared to 'Sharmaji ka beta'?",
+      "Should I invest in property or the stock market?",
+    ];
   }
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,7 +123,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col dark:bg-neutral-900">
-      {language === "ml" && (
+      <SupportModal
+        isOpen={isSupportModalOpen}
+        onClose={() => setIsSupportModalOpen(false)}
+      />
+
+      {language !== "ml" ? (
+        <div className="w-full p-2 text-center bg-gradient-to-r from-violet-400 to-red-500">
+          <span
+            className="text-white text-base cursor-pointer"
+            onClick={() => setIsSupportModalOpen(true)}
+          >
+            Love what we built? Support us by clicking{" "}
+            <span className="underline">here!</span>
+          </span>
+        </div>
+      ) : (
         <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
           <Link to="/kaineetam" className="chilanka">
             ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
@@ -134,9 +180,11 @@ export default function Home() {
           <Logo className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl" />
           <img
             src={
-              language === "ml"
-                ? "maveli-mascot.png"
-                : "shaaji-tamil-mascot.png"
+              language === "ta"
+                ? "shaaji-tamil-mascot.png"
+                : language === "hi"
+                ? "shaaji-hindi-mascot.png"
+                : "maveli-mascot.png"
             }
             className="w-14 sm:w-16 md:w-18"
             alt="Shaaji mascot"
@@ -184,22 +232,17 @@ export default function Home() {
         <div className="mt-5">
           <span className="dark:text-neutral-100 text-xs inline-flex items-center gap-x-3">
             Shaaji offered in:{" "}
-            <span
-              onClick={() => setLanguage("ml")}
-              className={`text-sm text-blue-500 cursor-pointer hover:underline ${
-                language === "ml" && "underline"
-              }`}
-            >
-              മലയാളം
-            </span>{" "}
-            <span
-              onClick={() => setLanguage("ta")}
-              className={`text-sm text-blue-500 cursor-pointer hover:underline ${
-                language === "ta" && "underline"
-              }`}
-            >
-              தமிழ்
-            </span>
+            {languages.map((l, index) => (
+              <span
+                key={index}
+                onClick={() => setLanguage(l.code)}
+                className={`text-sm text-blue-500 cursor-pointer hover:underline ${
+                  language === l.code && "underline"
+                }`}
+              >
+                {l.language}
+              </span>
+            ))}
           </span>
         </div>
       </div>

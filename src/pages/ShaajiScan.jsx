@@ -574,7 +574,11 @@ export default function ShaajiScan() {
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
             <img
               src={
-                language === "ta" ? "tamil-sleeping.png" : "shaaji-sleeping.png"
+                language === "ta"
+                  ? "tamil-sleeping.png"
+                  : language === "hi"
+                  ? "hindi-sleeping.png"
+                  : "shaaji-sleeping.png"
               }
               className="max-w-36 text-gray-600"
             />
