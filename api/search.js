@@ -16,6 +16,11 @@ const API_KEYS = [
   process.env.GEMINI_API_KEY_3,
   process.env.GEMINI_API_KEY_4,
   process.env.GEMINI_API_KEY_5,
+  process.env.SHAAJI_SCAN_KEY,
+  process.env.SHAAJI_SCAN_KEY_2,
+  process.env.SHAAJI_SCAN_KEY_3,
+  process.env.SHAAJI_SCAN_KEY_4,
+  process.env.SHAAJI_SCAN_KEY_5,
 ].filter((key) => key);
 
 // Function to check if error is rate limit related
