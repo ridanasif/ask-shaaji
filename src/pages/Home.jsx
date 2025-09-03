@@ -147,10 +147,10 @@ export default function Home() {
         </div>
       )}
 
-      <span className="text-xs text-center py-3 text-red-500 dark:text-red-400">
+      {/*<span className="text-xs text-center py-3 text-red-500 dark:text-red-400">
         Due to high traffic, our daily request limit has been reached. The
         service will be reset shortly. Please try again then!
-      </span>
+      </span>*/}
       <header className="w-full py-3 flex justify-end px-5 gap-x-4 md:gap-x-6 dark:text-neutral-400">
         <div className="flex gap-x-4 md:gap-x-6">
           {language === "ml" && (
