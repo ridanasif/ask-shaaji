@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Logo from "../components/Logo";
 import { Link } from "react-router-dom";
+import { allKeralaDistricts } from "../constants/app";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -48,9 +49,14 @@ const Supporters = () => {
       const from = pageToFetch * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
 
+      const keralaFilter = allKeralaDistricts
+        .map((district) => `location.ilike.%${district}%`)
+        .join(",");
+
       const { data, error: fetchError } = await supabase
         .from("donors")
-        .select("id, name, district, amount")
+        .select("id, name, location, amount")
+        .or(keralaFilter)
         .order("amount", { ascending: false })
         .range(from, to);
 
@@ -163,7 +169,7 @@ const Supporters = () => {
                         ? donor.name.substring(0, 37) + "..."
                         : donor.name}
                     </p>
-                    <p className="text-sm text-amber-600">{donor.district}</p>
+                    <p className="text-sm text-amber-600">{donor.location}</p>
                   </div>
                 </div>
                 <div className="font-bold text-amber-800 text-lg">

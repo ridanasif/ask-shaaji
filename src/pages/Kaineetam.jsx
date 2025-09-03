@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 import VallamkaliRace from "../ui/VallamkaliRace";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { allKeralaDistricts } from "../constants/app";
+
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
@@ -211,7 +213,7 @@ const DonorTable = ({ className = "", donors }) => {
                 <span>{topDonor.name}</span>
               </div>
             </td>
-            <td className="py-4 px-4 whitespace-nowrap">{topDonor.district}</td>
+            <td className="py-4 px-4 whitespace-nowrap">{topDonor.location}</td>
             <td className="py-4 px-4 whitespace-nowrap text-right font-extrabold text-red-900">
               {formatCurrency(topDonor.amount)}
             </td>
@@ -230,7 +232,7 @@ const DonorTable = ({ className = "", donors }) => {
                 {donor.name}
               </td>
               <td className="py-4 px-4 whitespace-nowrap text-gray-600">
-                {donor.district}
+                {donor.location}
               </td>
               <td className="py-4 px-4 whitespace-nowrap text-right font-semibold text-gray-800">
                 {formatCurrency(donor.amount)}
@@ -269,7 +271,14 @@ const Kaineetam = () => {
   useEffect(() => {
     // 2. Fetch initial data
     const fetchDonors = async () => {
-      const { data, error } = await supabase.from("donors").select("*");
+      const keralaFilter = allKeralaDistricts
+        .map((district) => `location.ilike.%${district}%`)
+        .join(",");
+      const { data, error } = await supabase
+        .from("donors")
+        .select("*")
+        .or(keralaFilter);
+
       if (error) {
         console.error("Error fetching donors:", error);
       } else {
@@ -286,8 +295,15 @@ const Kaineetam = () => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "donors" },
         (payload) => {
-          // When a new donor is inserted, add it to the existing state
-          setDonors((currentDonors) => [...currentDonors, payload.new]);
+          const newDonor = payload.new;
+          const isFromKerala = allKeralaDistricts.some(
+            (district) =>
+              newDonor.location &&
+              newDonor.location.toLowerCase().includes(district.toLowerCase())
+          );
+          if (isFromKerala) {
+            setDonors((currentDonors) => [...currentDonors, newDonor]);
+          }
         }
       )
       .subscribe();

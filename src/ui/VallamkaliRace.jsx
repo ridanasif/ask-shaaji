@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useState, useEffect } from "react";
-
+import { allKeralaDistricts } from "../constants/app";
 // The boat's width in `rem` units, corresponding to the `w-16` class (4.5rem).
 // This is essential for the horizontal positioning calculation.
 const boatWidthRem = 4;
@@ -12,22 +12,6 @@ const BoatIcon = React.memo(() => {
   );
 });
 
-const allKeralaDistricts = [
-  "Thiruvananthapuram",
-  "Kollam",
-  "Pathanamthitta",
-  "Alappuzha",
-  "Kottayam",
-  "Idukki",
-  "Ernakulam",
-  "Thrissur",
-  "Palakkad",
-  "Malappuram",
-  "Kozhikode",
-  "Wayanad",
-  "Kannur",
-  "Kasaragod",
-];
 
 const VallamkaliRace = ({ donors }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -40,8 +24,8 @@ const VallamkaliRace = ({ donors }) => {
 
   const districtData = useMemo(() => {
     const donationTotals = (donors || []).reduce((acc, donor) => {
-      if (!acc[donor.district]) acc[donor.district] = 0;
-      acc[donor.district] += donor.amount;
+      if (!acc[donor.location]) acc[donor.location] = 0;
+      acc[donor.location] += donor.amount;
       return acc;
     }, {});
     const fullDistrictData = allKeralaDistricts.map((district) => ({

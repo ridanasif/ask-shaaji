@@ -10,6 +10,23 @@ export const languages = [
   { code: "hi", language: "हिन्दी" },
 ];
 
+export const allKeralaDistricts = [
+  "Thiruvananthapuram",
+  "Kollam",
+  "Pathanamthitta",
+  "Alappuzha",
+  "Kottayam",
+  "Idukki",
+  "Ernakulam",
+  "Thrissur",
+  "Palakkad",
+  "Malappuram",
+  "Kozhikode",
+  "Wayanad",
+  "Kannur",
+  "Kasaragod",
+];
+
 export function getTemperConfig() {
   const { language } = useLanguageStore.getState();
   return {
