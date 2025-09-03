@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 const SupportModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -120,6 +120,15 @@ const SupportModal = ({ isOpen, onClose }) => {
             </div>
             <p className="mt-3 sm:mt-4 text-sm font-semibold text-gray-800 dark:text-neutral-100">
               Scan to pay with any UPI app
+            </p>
+          </div>
+
+          <div className="mt-4 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-lg p-3 flex items-start gap-x-3">
+            <Info className="w-5 h-5 mt-0.5 flex-shrink-0" />
+            <p className="text-xs sm:text-sm">
+              To get on the Live Supporters list, please add your{" "}
+              <strong>First Name & Location</strong> (e.g. Rohan, Delhi) in
+              the payment notes!
             </p>
           </div>
 

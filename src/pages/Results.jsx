@@ -1,7 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Logo from "../components/Logo";
-import Footer from "../components/Footer";
 import ShareButton from "../ui/ShareButton";
 import SkeletonLoader from "../ui/SkeletonLoader";
 import { getTemperConfig } from "../constants/app";
@@ -10,7 +9,6 @@ import { useTypingEffect } from "../hooks/useTypingEffect";
 import { useVoicePlayback } from "../hooks/useVoicePlayback";
 import VoiceButton from "../ui/VoiceButton";
 import { useLanguageStore } from "../store/languageStore";
-import SupportModal from "../ui/SupportModal";
 
 export default function Results() {
   const location = useLocation();
@@ -59,30 +57,7 @@ export default function Results() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <SupportModal
-        isOpen={isSupportModalOpen}
-        onClose={() => setIsSupportModalOpen(false)}
-      />
-      {language !== "ml" ? (
-        <div className="w-full p-2 text-center bg-gradient-to-r from-violet-400 to-red-500">
-          <span
-            className="text-white text-base cursor-pointer"
-            onClick={() => setIsSupportModalOpen(true)}
-          >
-            Love what we built? Support us by clicking{" "}
-            <span className="underline">here!</span>
-          </span>
-        </div>
-      ) : (
-        <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
-          <Link to="/kaineetam" className="chilanka">
-            ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
-            ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
-          </Link>
-        </div>
-      )}
-
+    <>
       <header className="w-full py-3 sm:py-5 px-4 sm:px-6 lg:px-10 border-b-[1px] border-gray-300 flex flex-col sm:flex-row items-center gap-y-3 sm:gap-x-5 sm:gap-y-0 sticky top-0 bg-white/70 backdrop-blur-md z-10 dark:bg-neutral-900 dark:border-neutral-700">
         <Link to="/" className="shrink-0">
           <Logo className="text-3xl" />
@@ -109,7 +84,7 @@ export default function Results() {
           />
         </div>
       </header>
-      <main className="grow flex flex-col bg-white dark:bg-neutral-900">
+      <section className="grow flex flex-col bg-white dark:bg-neutral-900">
         <div className="flex-1 px-4 sm:px-6 lg:px-10 py-4 sm:py-5">
           <div className="w-full lg:max-w-4xl space-y-4 sm:space-y-5">
             <span className="block mb-3 dark:text-neutral-500 text-sm">
@@ -192,8 +167,7 @@ export default function Results() {
             )}
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </section>
+    </>
   );
 }

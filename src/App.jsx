@@ -12,13 +12,16 @@ import Settings from "./pages/Settings";
 import Supporters from "./pages/Supporters";
 import Comics from "./pages/Comics";
 import ComicViewer from "./pages/ComicViewer";
+import MainLayout from "./layouts/MainLayout";
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<Results />} />
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<Results />} />
+          </Route>
           <Route path="/settings" element={<Settings />} />
           <Route path="/founders" element={<Founders />} />
           <Route path="/scan" element={<ShaajiScan />} />

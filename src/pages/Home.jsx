@@ -2,15 +2,12 @@ import { useState } from "react";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
-import Footer from "../components/Footer";
 import { Settings } from "lucide-react";
 import { useLanguageStore } from "../store/languageStore";
 import { languages } from "../constants/app";
-import SupportModal from "../ui/SupportModal";
 
 export default function Home() {
   const { language, setLanguage } = useLanguageStore();
-  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   let queries;
   if (language === "ml") {
     queries = [
@@ -122,31 +119,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col dark:bg-neutral-900">
-      <SupportModal
-        isOpen={isSupportModalOpen}
-        onClose={() => setIsSupportModalOpen(false)}
-      />
-
-      {language !== "ml" ? (
-        <div className="w-full p-2 text-center bg-gradient-to-r from-violet-400 to-red-500">
-          <span
-            className="text-white text-base cursor-pointer"
-            onClick={() => setIsSupportModalOpen(true)}
-          >
-            Love what we built? Support us by clicking{" "}
-            <span className="underline">here!</span>
-          </span>
-        </div>
-      ) : (
-        <div className="w-full p-2 text-base md:text-xl font-bold text-center bg-gradient-to-r from-green-300 to-yellow-300 dark:from-green-400 dark:to-yellow-400 text-green-950">
-          <Link to="/kaineetam" className="chilanka">
-            ഈ വർഷത്തെ ഏറ്റവും വലിയ കയ്നീട്ടം ആര് തരും? നിങ്ങളുടെ സ്ഥാനം
-            ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
-          </Link>
-        </div>
-      )}
-
+    <>
       {/*<span className="text-xs text-center py-3 text-red-500 dark:text-red-400">
         Due to high traffic, our daily request limit has been reached. The
         service will be reset shortly. Please try again then!
@@ -250,7 +223,6 @@ export default function Home() {
           </span>
         </div>
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }
