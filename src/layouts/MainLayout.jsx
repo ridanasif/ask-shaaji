@@ -4,6 +4,8 @@ import Footer from "../components/Footer";
 import { useLanguageStore } from "../store/languageStore";
 import SupportModal from "../ui/SupportModal";
 import WallOfFame from "../ui/WallOfFame";
+import { DonationProgressBar } from "../ui/WallOfFame";
+
 
 // The Layout no longer takes 'children' as a prop
 export default function MainLayout() {
@@ -34,8 +36,9 @@ export default function MainLayout() {
             ഉറപ്പിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക!
           </Link>
         </div>
-          )}
-          
+      )}
+
+      <DonationProgressBar />
       <WallOfFame />
 
       {/* The Outlet is where Home or Results will be rendered */}
