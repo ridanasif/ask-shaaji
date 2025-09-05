@@ -74,7 +74,7 @@ const WallOfFame = () => {
       const { data, error } = await supabase
         .from("donors")
         .select("*")
-        .order("amount", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(5);
       if (error) {
         console.error("Error fetching donors:", error);
@@ -93,14 +93,9 @@ const WallOfFame = () => {
         { event: "INSERT", schema: "public", table: "donors" },
         (payload) => {
           // When a new donor is inserted, add it to the existing state
-          setDonors((currentDonors) => {
-            // Create a new list with the old donors and the new one
-            const updatedList = [...currentDonors, payload.new];
-            // Sort the new list by amount in descending order
-            updatedList.sort((a, b) => b.amount - a.amount);
-            // Return only the top 5 from the sorted list
-            return updatedList.slice(0, 5);
-          });
+          setDonors((currentDonors) =>
+            [payload.new, ...currentDonors].slice(0, 5)
+          );
         }
       )
       .subscribe();
@@ -124,7 +119,7 @@ const WallOfFame = () => {
             Live Supporters
           </span>
           <span className="text-xs text-gray-500 dark:text-gray-400">
-            (Top 5)
+            (Latest 5)
           </span>
         </div>
         <div className="flex items-center gap-x-4 sm:gap-x-6 text-xs sm:text-sm text-gray-600 dark:text-neutral-300 overflow-x-auto whitespace-nowrap">
