@@ -54,11 +54,15 @@ const Founders = () => {
         <div className="flex items-center gap-x-1 md:gap-x-3 text-sm md:text-lg font-bold dark:text-neutral-100">
           <img
             className="w-8 md:w-12"
-            src={language === "ta" ? "tamil-head.png" : "mascot-head.png"}
+            src={
+              language === "ta"
+                ? "tamil-head.png"
+                : language === "mr"
+                ? "marathi-head.png"
+                : "mascot-head.png"
+            }
           />
-          <span>
-            Creators of Shaaji
-          </span>
+          <span>Creators of Shaaji</span>
         </div>
         <div className="grow"></div>
       </header>

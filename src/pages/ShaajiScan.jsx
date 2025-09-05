@@ -158,7 +158,13 @@ const OpinionModal = ({
         <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-gray-800">
           <div className="flex items-center gap-3">
             <img
-              src={language === "ta" ? "/tamil-head.png" : "/mascot-head.png"}
+              src={
+                language === "ta"
+                  ? "/tamil-head.png"
+                  : language === "mr"
+                  ? "/marathi-head.png"
+                  : "/mascot-head.png"
+              }
               alt="Shaaji"
               className="w-8"
             />
@@ -578,6 +584,8 @@ export default function ShaajiScan() {
                   ? "tamil-sleeping.png"
                   : language === "hi"
                   ? "hindi-sleeping.png"
+                  : language === "mr"
+                  ? "marathi-sleeping.png"
                   : "shaaji-sleeping.png"
               }
               className="max-w-36 text-gray-600"

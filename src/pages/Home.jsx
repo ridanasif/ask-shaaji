@@ -100,6 +100,34 @@ export default function Home() {
       "What is the best comeback when compared to 'Sharmaji ka beta'?",
       "Should I invest in property or the stock market?",
     ];
+  } else if (language === "mr") {
+    queries = [
+      "How to make a perfect cup of chaha (tea)?",
+      "How to wake up early without an alarm?",
+      "Best way to ask for more pocket money without getting a lecture?",
+      "Is it okay to eat Vada Pav for dinner?",
+      "How to focus on MPSC exams?",
+      "What to do when my parents see my bad semester results?",
+      "Is an engineering degree from Pune University the only good option?",
+      "How to convince parents for a Goa trip with friends?",
+      "What's a good first bike to buy for Pune traffic?",
+      "Should I buy an iPhone or a cheaper Android phone?",
+      "How to save money as a student in Pune?",
+      "Stable bank job or IT job in Hinjewadi?",
+      "How to look respectable in college?",
+      "Best Misal Pav spot near me?",
+      "Is it okay to wear shorts in my hometown?",
+      "How to talk to a girl I like?",
+      "My friend has a gaming laptop for 'studies'. Is it a good idea?",
+      "How to stop using my phone so much?",
+      "Best excuse to avoid a family gathering?",
+      "How to eat Puran Poli without making a mess?",
+      "Is it better to live in Mumbai or in Pune?",
+      "What is the secret to buying a flat in a good society?",
+      "How to handle relatives asking 'What are your future plans?'",
+      "My Aai (mom) says I'm lazy. Is it true?",
+      "Why is today's generation so undisciplined?",
+    ];
   }
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -161,6 +189,8 @@ export default function Home() {
                 ? "shaaji-tamil-mascot.png"
                 : language === "hi"
                 ? "shaaji-hindi-mascot.png"
+                : language === "mr"
+                ? "shaaji-marathi-mascot.png"
                 : "maveli-mascot.png"
             }
             className="w-14 sm:w-16 md:w-18"
