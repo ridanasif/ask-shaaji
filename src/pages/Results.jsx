@@ -16,7 +16,6 @@ export default function Results() {
   const query = queryParams.get("query");
   const navigate = useNavigate();
   const { language } = useLanguageStore();
-  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
   // Search Related
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,6 +134,7 @@ export default function Results() {
                     )}
                   </div>
                   <p
+                    dir={language === "ar" ? "rtl" : "ltr"}
                     className={`leading-relaxed ${currentTemper.textColor} text-sm sm:text-base`}
                   >
                     {typedOpinion}
@@ -149,15 +149,25 @@ export default function Results() {
                     <div
                       key={index}
                       className="group fade-in-up"
+                      dir={language === "ar" ? "rtl" : "ltr"}
                       style={{ animationDelay: `${index * 100 + 400}ms` }}
                     >
-                      <div className="text-xs sm:text-sm dark:text-teal-500 text-green-700 mb-1 truncate">
+                      <div
+                        className="text-xs sm:text-sm dark:text-teal-500 text-green-700 mb-1 truncate"
+                        dir="ltr"
+                      >
                         {result.url}
                       </div>
-                      <h3 className="text-lg sm:text-xl dark:text-blue-400 text-blue-600 hover:underline cursor-pointer mb-2 group-hover:underline leading-tight">
+                      <h3
+                        dir={language === "ar" ? "rtl" : "ltr"}
+                        className="text-lg sm:text-xl dark:text-blue-400 text-blue-600 hover:underline cursor-pointer mb-2 group-hover:underline leading-tight"
+                      >
                         {result.title}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed max-w-3xl">
+                      <p
+                        dir={language === "ar" ? "rtl" : "ltr"}
+                        className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed max-w-3xl"
+                      >
                         {result.snippet}
                       </p>
                     </div>

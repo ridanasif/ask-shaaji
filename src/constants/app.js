@@ -9,6 +9,7 @@ export const languages = [
   { code: "ta", language: "தமிழ்" },
   { code: "hi", language: "हिन्दी" },
   { code: "mr", language: "मराठी" },
+  { code: "ar", language: "اَلْعَرَبِيَّةُ" },
 ];
 
 export const allKeralaDistricts = [
@@ -39,6 +40,8 @@ export function getTemperConfig() {
           ? "mascot-head-happy.png"
           : language === "mr"
           ? "marathi-head-happy.png"
+          : language === "ar"
+          ? "arabic-head-happy.png"
           : "maveli-head-happy.png",
       time: "6 AM",
       bgColor: "bg-blue-100 dark:bg-blue-200",
@@ -55,6 +58,8 @@ export function getTemperConfig() {
           ? "mascot-head.png"
           : language === "mr"
           ? "marathi-head.png"
+          : language === "ar"
+          ? "arabic-head.png"
           : "maveli-head.png",
       time: "12 PM",
       bgColor: "bg-orange-100 dark:bg-orange-200",
@@ -71,6 +76,8 @@ export function getTemperConfig() {
           ? "mascot-head-angry.png"
           : language === "mr"
           ? "marathi-head-angry.png"
+          : language === "ar"
+          ? "arabic-head-angry.png"
           : "maveli-head-angry.png",
       time: "6 PM",
       bgColor: "bg-red-100 dark:bg-red-200",

@@ -163,6 +163,8 @@ const OpinionModal = ({
                   ? "/tamil-head.png"
                   : language === "mr"
                   ? "/marathi-head.png"
+                  : language === "ar"
+                  ? "/arabic-head.png"
                   : "/mascot-head.png"
               }
               alt="Shaaji"
@@ -586,6 +588,8 @@ export default function ShaajiScan() {
                   ? "hindi-sleeping.png"
                   : language === "mr"
                   ? "marathi-sleeping.png"
+                  : language === "ar"
+                  ? "arabic-sleeping.png"
                   : "shaaji-sleeping.png"
               }
               className="max-w-36 text-gray-600"

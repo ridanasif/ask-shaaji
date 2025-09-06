@@ -1,6 +1,5 @@
 import { useParams, Link } from "react-router-dom";
 import { comics as comicsData } from "../data/comicsData";
-import Logo from "../components/Logo";
 import { ArrowLeft } from "lucide-react";
 
 const ComicViewer = () => {

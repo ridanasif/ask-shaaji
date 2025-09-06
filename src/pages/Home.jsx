@@ -128,6 +128,34 @@ export default function Home() {
       "My Aai (mom) says I'm lazy. Is it true?",
       "Why is today's generation so undisciplined?",
     ];
+  } else if (language === "ar") {
+    queries = [
+      "How to make perfect Arabic coffee (qahwa)?",
+      "How to wake up for Fajr prayer without hitting snooze?",
+      "Best way to ask my father for a new car?",
+      "Is it okay to eat fast food every day?",
+      "How to focus on my studies with all the distractions?",
+      "What to do if my parents see my social media posts?",
+      "Is a government job the only way to have a stable future?",
+      "How to convince my family to let me travel to Europe with friends?",
+      "Should I buy the new iPhone or save money for marriage?",
+      "How to save money while living in a city like Dubai?",
+      "A stable government job or a risky online business?",
+      "How to dress respectfully but still be fashionable?",
+      "Best Mandi restaurant near me?",
+      "Is it okay to wear shorts at the mall?",
+      "How to find a spouse with a good family and reputation?",
+      "My friend has a gaming console for 'relaxing'. Is it a waste of time?",
+      "How to stop spending so much time in shisha cafes?",
+      "Best excuse to avoid a boring family gathering (majlis)?",
+      "Is it better to work in my home country or abroad?",
+      "What is the secret to starting a successful business?",
+      "How to deal with relatives asking about my marriage plans?",
+      "My mother says I am soft and lazy. Is it true?",
+      "Why is today's generation always wasting money (israf)?",
+      "Should I invest in real estate or crypto?",
+      "How to show respect to elders properly?",
+    ];
   }
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -191,6 +219,8 @@ export default function Home() {
                 ? "shaaji-hindi-mascot.png"
                 : language === "mr"
                 ? "shaaji-marathi-mascot.png"
+                : language === "ar"
+                ? "shaaji-arabic-mascot.png"
                 : "maveli-mascot.png"
             }
             className="w-14 sm:w-16 md:w-18"

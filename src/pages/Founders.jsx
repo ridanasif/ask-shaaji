@@ -59,6 +59,8 @@ const Founders = () => {
                 ? "tamil-head.png"
                 : language === "mr"
                 ? "marathi-head.png"
+                : language === "ar"
+                ? "arabic-head.png"
                 : "mascot-head.png"
             }
           />
