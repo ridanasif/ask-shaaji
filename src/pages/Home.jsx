@@ -5,6 +5,7 @@ import Logo from "../components/Logo";
 import { Settings } from "lucide-react";
 import { useLanguageStore } from "../store/languageStore";
 import { languages } from "../constants/app";
+import { getUncleName } from "../constants/app";
 
 export default function Home() {
   const { language, setLanguage } = useLanguageStore();
@@ -194,7 +195,7 @@ export default function Home() {
             to="/scan"
             className="cursor-pointer cal-sans dark:hover:text-neutral-100"
           >
-            Shaaji Scan
+            {getUncleName()} Scan
           </Link>
         </div>
         <div>
@@ -212,19 +213,9 @@ export default function Home() {
         <div className="flex items-center gap-x-3 sm:gap-x-4">
           <Logo className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl" />
           <img
-            src={
-              language === "ta"
-                ? "shaaji-tamil-mascot.png"
-                : language === "hi"
-                ? "shaaji-hindi-mascot.png"
-                : language === "mr"
-                ? "shaaji-marathi-mascot.png"
-                : language === "ar"
-                ? "shaaji-arabic-mascot.png"
-                : "maveli-mascot.png"
-            }
+            src={`/mascot/${language}.png`}
             className="w-14 sm:w-16 md:w-18"
-            alt="Shaaji mascot"
+            alt={`${getUncleName()} mascot`}
           />
         </div>
 
@@ -246,7 +237,7 @@ export default function Home() {
           <input
             type="search"
             className="flex-1 outline-0 text-sm sm:text-base dark:placeholder-neutral-100 dark:text-neutral-100"
-            placeholder="Ask Shaaji"
+            placeholder={`Ask ${getUncleName()}`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -255,7 +246,7 @@ export default function Home() {
         {/* Buttons - always side by side */}
         <div className="flex gap-x-2">
           <Button
-            text="Shaaji Search"
+            text={`${getUncleName()} Search`}
             onClick={() => handleSearch(searchQuery)}
           />
           <Button
@@ -268,7 +259,7 @@ export default function Home() {
 
         <div className="mt-5">
           <span className="dark:text-neutral-100 text-xs inline-flex items-center gap-x-3">
-            Shaaji offered in:{" "}
+            {getUncleName()} offered in:{" "}
             {languages.map((l, index) => (
               <span
                 key={index}

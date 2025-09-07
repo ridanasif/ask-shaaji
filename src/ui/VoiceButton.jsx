@@ -1,4 +1,5 @@
 import { getTemperConfig } from "../constants/app";
+import { getUncleName } from "../constants/app";
 // Optimized Voice Button Component
 const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
   const currentTemper = getTemperConfig()[temperLevel];
@@ -24,7 +25,7 @@ const VoiceButton = ({ onPlay, onStop, isPlaying, isLoading, temperLevel }) => {
           ? "Loading..."
           : isPlaying
           ? "Stop audio"
-          : "Play Shaaji's opinion"
+          : `Play ${getUncleName()}'s opinion`
       }
     >
       {isLoading ? (

@@ -9,6 +9,7 @@ import { useTypingEffect } from "../hooks/useTypingEffect";
 import { useVoicePlayback } from "../hooks/useVoicePlayback";
 import VoiceButton from "../ui/VoiceButton";
 import { useLanguageStore } from "../store/languageStore";
+import { getUncleName } from "../constants/app";
 
 export default function Results() {
   const location = useLocation();
@@ -76,7 +77,7 @@ export default function Results() {
           <input
             type="search"
             className="flex-1 outline-0 text-sm sm:text-base dark:placeholder-neutral-100 dark:text-neutral-100"
-            placeholder="Ask Shaaji"
+            placeholder={`Ask ${getUncleName()}`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -87,8 +88,8 @@ export default function Results() {
         <div className="flex-1 px-4 sm:px-6 lg:px-10 py-4 sm:py-5">
           <div className="w-full lg:max-w-4xl space-y-4 sm:space-y-5">
             <span className="block mb-3 dark:text-neutral-500 text-sm">
-              Adjust Shaaji's personality from{" "}
-              <Link to={"/settings"}>
+              Adjust {getUncleName()}'s personality from{" "}
+              <Link to="/settings">
                 <b>Settings</b>
               </Link>
               .
@@ -110,9 +111,11 @@ export default function Results() {
                       <img
                         className="w-6 sm:w-8 flex-shrink-0"
                         src={currentTemper.img}
-                        alt="shaaji"
+                        alt={getUncleName()}
                       />
-                      <span className="leading-tight">Shaaji's Opinion</span>
+                      <span className="leading-tight">
+                        {getUncleName()}'s Opinion
+                      </span>
                     </span>
 
                     {searchData.uncle_opinion && !isTyping && (

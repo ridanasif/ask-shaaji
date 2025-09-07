@@ -1,4 +1,5 @@
 import { getTemperConfig } from "../constants/app";
+import { getUncleName } from "../constants/app";
 const TemperControl = ({ temperLevel, setTemperLevel }) => {
   const TEMPER_CONFIG = getTemperConfig();
   const getCurrentThumbColor = () => {
@@ -9,7 +10,7 @@ const TemperControl = ({ temperLevel, setTemperLevel }) => {
     <div className="bg-white dark:bg-neutral-800 rounded-xl border border-gray-200 dark:border-neutral-700 p-4 sm:p-6 lg:sticky lg:top-24">
       <div className="text-center mb-4 sm:mb-6">
         <h3 className="text-base sm:text-lg font-semibold mb-2 dark:text-neutral-100">
-          Shaaji's Temper
+          {getUncleName()}'s Temper
         </h3>
         <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
           <span className="text-xl sm:text-2xl">

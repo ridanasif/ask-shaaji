@@ -7,10 +7,12 @@ const Comics = () => {
     return (
       <div className="bg-gray-50 border-2 p-4 dark:bg-neutral-800 dark:text-white border-black flex flex-col gap-y-2 hover:scale-105 transition-all hover:bg-gray-100 dark:hover:bg-neutral-700 cursor-pointer text-center">
         <div className="flex justify-end">
-          <span className="font-light text-gray-600 dark:text-neutral-400 text-xs">{comic.date}</span>
+          <span className="font-light text-gray-600 dark:text-neutral-400 text-xs">
+            {comic.date}
+          </span>
         </div>
-        <img src={comic.image} />
-        <h3 className="text-2xl bangers">{comic.name}</h3>
+        <img src={comic.coverImage} />
+        <h3 className="text-2xl bangers">{comic.title}</h3>
       </div>
     );
   };
@@ -40,7 +42,10 @@ const Comics = () => {
             </h3>
           </div>
           <div className="h-full w-full overflow-hidden place-items-end place-content-center border-l-2 border-black">
-            <img src="shaaji-comics.png" className="w-full object-cover h-full" />
+            <img
+              src="shaaji-comics.png"
+              className="w-full object-cover h-full"
+            />
           </div>
         </section>
         <main className="p-5 space-y-6 grow">

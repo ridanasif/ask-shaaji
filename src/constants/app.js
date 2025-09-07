@@ -4,87 +4,68 @@ export const useClientSide = isDev && hasClientKey; // Global temper configurati
 export const TEMPER_STORAGE_KEY = "shaaji_temper_level";
 import { useLanguageStore } from "../store/languageStore";
 
+export function getUncleName() {
+  const { language } = useLanguageStore.getState();
+  return language === "ar" ? "Hakeem" : "Shaaji";
+}
+
 export const languages = [
   { code: "ml", language: "മലയാളം" },
   { code: "ta", language: "தமிழ்" },
   { code: "hi", language: "हिन्दी" },
   { code: "mr", language: "मराठी" },
+  { code: "kn", language: "ಕನ್ನಡ" },
+  { code: "te", language: "తెలుగు" },
+  { code: "bn", language: "বাংলা" },
   { code: "ar", language: "اَلْعَرَبِيَّةُ" },
 ];
 
-export const allKeralaDistricts = [
-  "Thiruvananthapuram",
-  "Kollam",
-  "Pathanamthitta",
-  "Alappuzha",
-  "Kottayam",
-  "Idukki",
-  "Ernakulam",
-  "Thrissur",
-  "Palakkad",
-  "Malappuram",
-  "Kozhikode",
-  "Wayanad",
-  "Kannur",
-  "Kasaragod",
-];
+export function getMascotHead(language = "ml", temper = 1 /* Neutral */) {
+  const languagesWithMascotHeads = ["ta", "mr", "ar", "bn"];
+  let imgPrefix = "/mascot-head/";
+  if (languagesWithMascotHeads.includes(language)) {
+    imgPrefix += language;
+  } else {
+    imgPrefix += "ml";
+  }
+  switch (temper) {
+    case 0:
+      return `${imgPrefix}-happy.png`;
+    case 1:
+      return `${imgPrefix}.png`;
+    case 2:
+      return `${imgPrefix}-angry.png`;
+    default:
+      return `${imgPrefix}.png`;
+  }
+}
 
 export function getTemperConfig() {
   const { language } = useLanguageStore.getState();
   return {
     0: {
-      img:
-        language === "ta"
-          ? "tamil-head-happy.png"
-          : language === "hi"
-          ? "mascot-head-happy.png"
-          : language === "mr"
-          ? "marathi-head-happy.png"
-          : language === "ar"
-          ? "arabic-head-happy.png"
-          : "maveli-head-happy.png",
+      img: getMascotHead(language, 0),
       time: "6 AM",
       bgColor: "bg-blue-100 dark:bg-blue-200",
       textColor: "text-blue-900",
       gradientColor: "#3b82f6",
-      description:
-        "Morning Shaaji is calm and gentle, giving thoughtful advice with patience.",
+      description: `Morning ${getUncleName()} is calm and gentle, giving thoughtful advice with patience.`,
     },
     1: {
-      img:
-        language === "ta"
-          ? "tamil-head.png"
-          : language === "hi"
-          ? "mascot-head.png"
-          : language === "mr"
-          ? "marathi-head.png"
-          : language === "ar"
-          ? "arabic-head.png"
-          : "maveli-head.png",
+      img: getMascotHead(language, 1),
       time: "12 PM",
       bgColor: "bg-orange-100 dark:bg-orange-200",
       textColor: "text-orange-900",
       gradientColor: "#f97316",
-      description:
-        "Neutral Shaaji is balanced, mixing wisdom with mild skepticism.",
+      description: `Neutral ${getUncleName()} is balanced, mixing wisdom with mild skepticism.`,
     },
     2: {
-      img:
-        language === "ta"
-          ? "tamil-head-angry.png"
-          : language === "hi"
-          ? "mascot-head-angry.png"
-          : language === "mr"
-          ? "marathi-head-angry.png"
-          : language === "ar"
-          ? "arabic-head-angry.png"
-          : "maveli-head-angry.png",
+      img: getMascotHead(language, 2),
       time: "6 PM",
       bgColor: "bg-red-100 dark:bg-red-200",
       textColor: "text-red-900",
       gradientColor: "#ef4444",
-      description:
-        "Evening Shaaji is irritated and blunt, showing his true Malayalam uncle frustration.",
+      description: `Evening ${getUncleName()} is irritated and blunt, showing his true Malayalam uncle frustration.`,
     },
   };
 }

@@ -1,6 +1,7 @@
 import { X, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguageStore } from "../store/languageStore";
+import { getUncleName } from "../constants/app";
 
 const SupportModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -87,10 +88,10 @@ const SupportModal = ({ isOpen, onClose }) => {
           {/* Header - More compact */}
           <div className="text-center mb-4 sm:mb-5">
             <h2 className="text-xl sm:text-2xl font-semibold dark:text-white">
-              Support Shaaji
+              Support {getUncleName()}
             </h2>
             <p className="text-gray-600 dark:text-neutral-300 mt-1.5 text-xs sm:text-sm">
-              Your contribution helps us keep Shaaji running!
+              Your contribution helps us keep {getUncleName()} running!
             </p>
           </div>
 
@@ -156,7 +157,7 @@ const SupportModal = ({ isOpen, onClose }) => {
                 to="/scan"
                 className="font-semibold text-gray-600 dark:text-neutral-200"
               >
-                Shaaji Scan
+                {getUncleName()} Scan
               </Link>
               .
             </p>

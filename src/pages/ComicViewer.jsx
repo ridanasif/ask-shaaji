@@ -39,8 +39,8 @@ const ComicViewer = () => {
       </header>
       <main className="flex-grow flex items-center justify-center p-4">
         <img
-          src={comic.comic}
-          alt={`Comic page for ${comic.name}`}
+          src={comic.comicImage}
+          alt={`Comic page for ${comic.title}`}
           className="max-w-full max-h-[85vh] hover:scale-105 transition-transform border-2 border-black shadow-2xl shadow-orange-500/20"
         />
       </main>

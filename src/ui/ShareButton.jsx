@@ -1,6 +1,8 @@
 import { useClientSide, getTemperConfig } from "../constants/app";
 import { useState } from "react";
 import { useAlert } from "../context/AlertContext";
+import { getUncleName } from "../constants/app";
+import { useLanguageStore } from "../store/languageStore";
 
 const GENERAL_ERROR_MESSAGE = "Failed to generate image!";
 // Shared helper function for text wrapping logic
@@ -70,7 +72,16 @@ const getWrappedLines = (ctx, text, maxWidth) => {
 };
 
 // Refactored wrapText function
-const wrapText = (ctx, text, x, y, maxWidth, lineHeight, maxLines = null) => {
+const wrapText = (
+  ctx,
+  text,
+  x,
+  y,
+  maxWidth,
+  lineHeight,
+  maxLines = null,
+  textAlign = "left"
+) => {
   // 1. Use shared helper to get wrapped lines
   let lines = getWrappedLines(ctx, text, maxWidth);
 
@@ -98,6 +109,7 @@ const wrapText = (ctx, text, x, y, maxWidth, lineHeight, maxLines = null) => {
   }
 
   // 3. Draw the final, correctly formatted lines (unique to wrapText)
+  ctx.textAlign = textAlign;
   lines.forEach((line, index) => {
     ctx.fillText(line, x, y + index * lineHeight);
   });
@@ -156,7 +168,7 @@ const drawImageInCircle = (ctx, image, centerX, centerY, radius) => {
   ctx.restore();
 };
 
-function generateShareImage(query, opinion, temperLevel) {
+function generateShareImage(query, opinion, temperLevel, language) {
   return new Promise((resolve, reject) => {
     // --- START: Refactored Layout System ---
 
@@ -272,7 +284,7 @@ function generateShareImage(query, opinion, temperLevel) {
     const drawCanvas = () => {
       try {
         // --- Drawing logic using the new LAYOUT object ---
-
+        const isRTL = language === "ar";
         // Canvas background
         ctx.fillStyle = currentTemper.gradientColor;
         ctx.fillRect(0, 0, LAYOUT.width, canvasHeight);
@@ -350,7 +362,7 @@ function generateShareImage(query, opinion, temperLevel) {
         ctx.textBaseline = "middle";
         drawColorfulText(
           ctx,
-          "Shaaji",
+          getUncleName(),
           titleX,
           mascotCenterY,
           LAYOUT.font.title,
@@ -360,6 +372,7 @@ function generateShareImage(query, opinion, temperLevel) {
 
         // --- Text Content Section ---
         const textStartX = contentX + LAYOUT.padding.inner;
+        const textEndX = textStartX + textWidth;
         let currentY = headerY + LAYOUT.header.height + LAYOUT.spacing.large;
 
         // Query text
@@ -380,14 +393,19 @@ function generateShareImage(query, opinion, temperLevel) {
         // Opinion text
         ctx.font = LAYOUT.font.opinion;
         ctx.fillStyle = "#333";
+        ctx.direction = isRTL ? "rtl" : "ltr";
         wrapText(
           ctx,
           opinion,
-          textStartX,
+          isRTL ? textEndX : textStartX,
           currentY,
           textWidth,
-          LAYOUT.lineHeight.opinion
+          LAYOUT.lineHeight.opinion,
+          null,
+          isRTL ? "right" : "left"
         );
+        //Reset direction to default
+        ctx.direction = "ltr";
 
         // --- Footer Section ---
         const footerY =
@@ -437,14 +455,14 @@ function generateShareImage(query, opinion, temperLevel) {
       }
     }, 2000);
 
-    mascotImage.src = `/${currentTemper.img}`;
+    mascotImage.src = currentTemper.img;
   });
 }
 
 // The rest of the file (ShareButton component) remains the same
 const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
   const { showAlert } = useAlert();
-
+  const { language } = useLanguageStore();
   const [isSharing, setIsSharing] = useState(false);
   const currentTemper = getTemperConfig()[temperLevel];
 
@@ -456,7 +474,12 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
       // Wait for fonts to be ready before generating the image
       await document.fonts.ready;
       // Wait for the canvas to be properly generated
-      const canvas = await generateShareImage(query, opinion, temperLevel);
+      const canvas = await generateShareImage(
+        query,
+        opinion,
+        temperLevel,
+        language
+      );
 
       // Convert to blob
       canvas.toBlob(
@@ -471,14 +494,18 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
           try {
             if (navigator.share && navigator.canShare) {
               // Use native sharing if available
-              const file = new File([blob], "shaaji-opinion.png", {
-                type: "image/png",
-              });
+              const file = new File(
+                [blob],
+                `${getUncleName().toLowerCase()}-opinion.png`,
+                {
+                  type: "image/png",
+                }
+              );
 
               if (navigator.canShare({ files: [file] })) {
                 await navigator.share({
-                  title: `Shaaji's Opinion on: ${query}`,
-                  text: `Check out what Shaaji thinks about "${query}"`,
+                  title: `${getUncleName()}'s Opinion on: ${query}`,
+                  text: `Check out what ${getUncleName()} thinks about "${query}"`,
                   files: [file],
                 });
               } else {
@@ -520,7 +547,7 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `shaaji-opinion-${Date.now()}.png`;
+    a.download = `${getUncleName().toLowerCase()}-opinion-${Date.now()}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -538,7 +565,7 @@ const ShareButton = ({ query, opinion, temperLevel, isVisible }) => {
           ? "cursor-not-allowed opacity-50"
           : "cursor-pointer hover:shadow-lg"
       } bg-white/80 backdrop-blur-sm border border-white/50 hover:bg-white/90`}
-      title="Share Shaaji's opinion"
+      title={`Share ${getUncleName()}'s opinion`}
     >
       {isSharing ? (
         <svg

@@ -6,6 +6,7 @@ import {
   setTemperLevel as saveTemperLevel,
 } from "../utils/temperUtils";
 import { ArrowLeft } from "lucide-react";
+import { getUncleName } from "../constants/app";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const Settings = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/")}
               className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg transition-colors"
               title="Go back"
             >
@@ -136,7 +137,7 @@ const Settings = () => {
                   General Settings
                 </h2>
                 <p className="text-sm sm:text-base text-gray-600 dark:text-neutral-400">
-                  Customize your Shaaji experience with these general
+                  Customize your {getUncleName()} experience with these general
                   preferences.
                 </p>
               </div>
@@ -145,11 +146,11 @@ const Settings = () => {
               <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-neutral-700 p-4 sm:p-6">
                 <div className="mb-4 sm:mb-6">
                   <h3 className="text-base sm:text-lg font-semibold mb-2 dark:text-neutral-100">
-                    Shaaji's Personality
+                    {getUncleName()}'s Personality
                   </h3>
                   <p className="text-gray-600 dark:text-neutral-400 text-xs sm:text-sm">
-                    Choose how Shaaji responds to your queries. This setting
-                    will be remembered for your future searches.
+                    Choose how {getUncleName()} responds to your queries. This
+                    setting will be remembered for your future searches.
                   </p>
                 </div>
 

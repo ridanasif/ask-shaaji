@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { generateAndPlayVoice } from "../utils/voiceUtils";
 import { useAlert } from "../context/AlertContext";
+import { getUncleName } from "../constants/app";
 export const useVoicePlayback = ({ opinion, temperLevel, isSearchLoading }) => {
   const { showAlert } = useAlert();
   // Voice Related
@@ -56,7 +57,7 @@ export const useVoicePlayback = ({ opinion, temperLevel, isSearchLoading }) => {
     } catch (error) {
       console.error("Audio error:", error);
       showAlert(
-        "It seems Shaaji has lost his voice for a moment. Please try again in a bit."
+        `It seems ${getUncleName()} has lost his voice for a moment. Please try again in a bit.`
       );
       stopAndCleanUp(); // Clean up on error
     } finally {

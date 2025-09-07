@@ -10,10 +10,11 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { GoogleGenAI } from "@google/genai";
-import { useClientSide } from "../constants/app";
+import { getMascotHead, useClientSide } from "../constants/app";
 import { Link } from "react-router-dom";
 import { useLanguageStore } from "../store/languageStore";
 import { getShaajiScanPrompt } from "../utils/promptUtils";
+import { getUncleName } from "../constants/app";
 
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
@@ -33,9 +34,9 @@ const OpinionModal = ({
   const captionContainerRef = useRef(null);
   const { language } = useLanguageStore();
   const LOADING_TEXTS = [
-    "Shaaji is thinking...",
+    `${getUncleName()} is thinking...`,
     "Scanning for fashion crimes...",
-    "Shaaji is judging your pose...",
+    `${getUncleName()} is judging your pose...`,
     "Consulting the uncle network...",
     "Preparing some brutal honesty...",
     "Thinking of a suitably savage roast...",
@@ -158,20 +159,12 @@ const OpinionModal = ({
         <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-gray-800">
           <div className="flex items-center gap-3">
             <img
-              src={
-                language === "ta"
-                  ? "/tamil-head.png"
-                  : language === "mr"
-                  ? "/marathi-head.png"
-                  : language === "ar"
-                  ? "/arabic-head.png"
-                  : "/mascot-head.png"
-              }
-              alt="Shaaji"
+              src={getMascotHead(language)}
+              alt={getUncleName()}
               className="w-8"
             />
             <h3 id="modal-title" className="text-lg font-semibold text-white">
-              Shaaji's Opinion
+              {getUncleName()}'s Opinion
             </h3>
           </div>
           <button
@@ -542,7 +535,7 @@ export default function ShaajiScan() {
           <Link to="/">
             <ArrowLeft className="cursor-pointer dark:text-neutral-100" />
           </Link>
-          <h1 className="cal-sans text-2xl">Shaaji Scan</h1>
+          <h1 className="cal-sans text-2xl">{getUncleName()} Scan</h1>
           <span className="text-blue-500 text-sm px-2 py-1 ring-1 ring-blue-500 rounded-full">
             BETA
           </span>
@@ -581,20 +574,12 @@ export default function ShaajiScan() {
         !streamState.isInitializing && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
             <img
-              src={
-                language === "ta"
-                  ? "tamil-sleeping.png"
-                  : language === "hi"
-                  ? "hindi-sleeping.png"
-                  : language === "mr"
-                  ? "marathi-sleeping.png"
-                  : language === "ar"
-                  ? "arabic-sleeping.png"
-                  : "shaaji-sleeping.png"
-              }
+              src={`/mascot-sleeping/${language}.png`}
               className="max-w-36 text-gray-600"
             />
-            <p className="text-gray-400">Shaaji is sleeping. Wake him up!</p>
+            <p className="text-gray-400">
+              {getUncleName()} is sleeping. Wake him up!
+            </p>
           </div>
         )}
 
