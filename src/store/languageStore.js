@@ -1,6 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { languages } from "../constants/app";
+
+export const languages = [
+  { code: "ml", language: "മലയാളം" },
+  { code: "ta", language: "தமிழ்" },
+  { code: "hi", language: "हिन्दी" },
+  { code: "mr", language: "मराठी" },
+  { code: "kn", language: "ಕನ್ನಡ" },
+  { code: "te", language: "తెలుగు" },
+  { code: "bn", language: "বাংলা" },
+  { code: "ar", language: "اَلْعَرَبِيَّةُ" },
+];
 
 // Helper function remains the same
 function getLanguageFromURL() {

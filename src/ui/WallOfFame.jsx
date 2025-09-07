@@ -116,7 +116,7 @@ const WallOfFame = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </span>
           <span className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400">
-            Live Supporters
+            Live
           </span>
           <span className="text-xs text-gray-500 dark:text-gray-400">
             (Latest 5)

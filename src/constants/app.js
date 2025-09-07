@@ -9,17 +9,6 @@ export function getUncleName() {
   return language === "ar" ? "Hakeem" : "Shaaji";
 }
 
-export const languages = [
-  { code: "ml", language: "മലയാളം" },
-  { code: "ta", language: "தமிழ்" },
-  { code: "hi", language: "हिन्दी" },
-  { code: "mr", language: "मराठी" },
-  { code: "kn", language: "ಕನ್ನಡ" },
-  { code: "te", language: "తెలుగు" },
-  { code: "bn", language: "বাংলা" },
-  { code: "ar", language: "اَلْعَرَبِيَّةُ" },
-];
-
 export function getMascotHead(language = "ml", temper = 1 /* Neutral */) {
   const languagesWithMascotHeads = ["ta", "mr", "ar", "bn"];
   let imgPrefix = "/mascot-head/";

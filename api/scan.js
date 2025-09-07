@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { getShaajiScanPrompt } from "../src/utils/promptUtils.js";
+
 const MODEL_NAME = "gemini-2.5-flash";
 
 const API_KEYS = [

@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
 import { Settings } from "lucide-react";
 import { useLanguageStore } from "../store/languageStore";
-import { languages } from "../constants/app";
 import { getUncleName } from "../constants/app";
+import { languages } from "../store/languageStore";
 
 export default function Home() {
   const { language, setLanguage } = useLanguageStore();
@@ -37,13 +37,6 @@ export default function Home() {
       "How to get out of attending a family function?",
       "My mom says I'm lazy. Is it true?",
       "Why is today's generation always tired?",
-
-      "How to eat a full 26-item sadhya without falling asleep immediately?",
-      "My pookkalam looks like a mess. Any last-minute tips to fix it?",
-      "Can I wear jeans for Thiruvonam or is a mundu compulsory?",
-      "What's the best answer when relatives ask 'What are your future plans?' during the sadhya?",
-      "Is it okay to ask for Onam Kaineettam using a QR code?",
-      "My cousin's Onam reel on Instagram got 1000 likes. Should I be worried?",
     ];
   } else if (language === "ta") {
     queries = [
@@ -157,6 +150,90 @@ export default function Home() {
       "Should I invest in real estate or crypto?",
       "How to show respect to elders properly?",
     ];
+  } else if (language === "kn") {
+    queries = [
+      "How to make perfect filter coffee?",
+      "How to wake up early to avoid Bangalore traffic?",
+      "Best way to ask for money for a new bike?",
+      "Is it okay to eat instant noodles for dinner?",
+      "How to focus on studying for government exams?",
+      "What to say when my parents find out I failed a subject?",
+      "Is an IT job in Bangalore the only good career option?",
+      "How to convince parents for a trip to Gokarna with friends?",
+      "Should I buy an iPhone or save for a BDA site down-payment?",
+      "How to save money as a student in Bangalore?",
+      "Government job or a risky startup job?",
+      "How to look cool in college without looking like a 'show-off'?",
+      "Best Masale Dose spot in Basavanagudi?",
+      "Is it okay to wear shorts in my hometown in Karnataka?",
+      "How to talk to a girl I like?",
+      "My friend has a gaming laptop for 'online classes'. Should I get one?",
+      "How to stop using my phone so much?",
+      "Best excuse to avoid a distant relative's function?",
+      "Is it better to live in Bangalore or go abroad?",
+      "What is the secret to becoming rich?",
+      "How to eat Ragi Mudde properly?",
+      "Why is this generation always so tired?",
+      "How to handle relatives asking about my future plans?",
+      "My mom says I'm lazy. Is it true?",
+      "Is it necessary to speak Kannada in Bangalore?",
+    ];
+  } else if (language === "te") {
+    queries = [
+      "How to make perfect Telugu-style coffee?",
+      "How to wake up early in the morning?",
+      "Best way to ask for more pocket money?",
+      "Is it okay to eat biryani for dinner every night?",
+      "How to focus on EAMCET exams?",
+      "What to say when my parents see my bad report card?",
+      "Is a software job in Hyderabad the only respectable career?",
+      "How to convince parents for a trip with friends?",
+      "What's a good first bike to buy?",
+      "Should I buy an iPhone or invest in a plot of land?",
+      "How to save money as a student in Hyderabad?",
+      "Job in USA or family business in hometown?",
+      "How to look like a Tollywood hero in college?",
+      "Best Hyderabadi biryani spot near me?",
+      "Is it okay to wear shorts in my hometown in Andhra?",
+      "How to talk to a girl without being awkward?",
+      "My friend has a new gaming PC. Is it a waste of money?",
+      "How to stop using my phone so much?",
+      "Best excuse to avoid a family wedding?",
+      "How to eat properly at a Telugu wedding feast?",
+      "Is it better to live in a big city or our native place?",
+      "What is the secret to becoming a 'crorepati'?",
+      "How to handle relatives asking 'When are you getting married?'",
+      "My parents say I have no respect for elders. Is it true?",
+      "Why is today's generation always so dramatic?",
+    ];
+  } else if (language === "bn") {
+    queries = [
+      "How to make a perfect cup of cha (tea)?",
+      "How to wake up early for a morning walk?",
+      "Best way to ask for more pocket money for books?",
+      "Is it okay to eat egg rolls for dinner?",
+      "How to focus on studying with a football match on TV?",
+      "What to say when my parents see my bad exam results?",
+      "Is a stable, respectable job the only good career option?",
+      "How to convince parents for a Darjeeling trip with friends?",
+      "Should I buy an iPhone or a cheaper Android phone?",
+      "How to save money as a student in Kolkata?",
+      "A job in the government or a creative field?",
+      "How to look intellectual and serious in college?",
+      "Best biryani spot in Kolkata?",
+      "Is it okay to wear shorts in my hometown (para)?",
+      "How to start a conversation (adda) with someone I like?",
+      "My friend has an expensive laptop for 'projects'. Is it just for show-off?",
+      "How to stop arguing about politics on social media?",
+      "Best excuse to avoid a long family 'adda' (chat session)?",
+      "Is it better to live abroad or in Kolkata?",
+      "What is the secret to becoming a culturally respected person?",
+      "How to handle relatives asking 'What are your future plans?'",
+      "My parents say I don't read enough. Is it true?",
+      "Why is today's generation not interested in high culture?",
+      "Mohun Bagan or East Bengal?",
+      "How to appreciate Rabindra Sangeet properly?",
+    ];
   }
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -258,7 +335,7 @@ export default function Home() {
         </div>
 
         <div className="mt-5">
-          <span className="dark:text-neutral-100 text-xs inline-flex items-center gap-x-3">
+          <span className="dark:text-neutral-100 text-xs flex flex-wrap gap-3 items-center">
             {getUncleName()} offered in:{" "}
             {languages.map((l, index) => (
               <span

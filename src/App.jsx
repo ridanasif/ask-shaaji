@@ -11,6 +11,7 @@ import Settings from "./pages/Settings";
 import Comics from "./pages/Comics";
 import ComicViewer from "./pages/ComicViewer";
 import MainLayout from "./layouts/MainLayout";
+
 function App() {
   return (
     <>
